@@ -1,0 +1,27 @@
+{
+  "name": "react-native-bem-check-box",
+  "version": "1.0.0",
+  "summary": "React Native bridge for BEMCheckBox",
+  "homepage": "https://github.com/torifat/react-native-bem-check-box",
+  "license": "MIT",
+  "authors": {
+    "Rifat Nabi": "to.rifat@gmail.com"
+  },
+  "source": {
+    "git": "https://github.com/torifat/react-native-bem-check-box.git",
+    "tag": "1.0.0"
+  },
+  "platforms": {
+    "ios": "7.0"
+  },
+  "requires_arc": true,
+  "source_files": [
+    "RNBEMCheckBox/*.{h,m}",
+    "BEMCheckBox/*.{h,m}"
+  ],
+  "dependencies": {
+    "React": [
+
+    ]
+  }
+}
