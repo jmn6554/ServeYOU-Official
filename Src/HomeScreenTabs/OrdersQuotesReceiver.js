@@ -1,48 +1,46 @@
 import React, { useState, useEffect, useRef } from "react";
-import { View, Text, SafeAreaView, StyleSheet, Alert, FlatList, Modal, Image, KeyboardAvoidingView, TouchableOpacity, Pressable, Keyboard, Dimensions } from "react-native";
-import { SpeedDial, Overlay } from 'react-native-elements';
-import GestureRecognizer from 'react-native-swipe-gestures';
-import CustomInput from "../Components/CustomInput";
-import CustomButton from "../Components/CustomButtons/CustomButton";
-import ModalButtons from "../Components/CustomButtons/ModalButtons";
-import ModalButton2 from "../Components/CustomButtons/ModalButton2"
-import ElipseButton from "../Components/CustomButtons/ElipseButton"
-import PlusButton from "../Components/CustomButtons/PlusButton"
-import DeleteButton from "../Components/CustomButtons/DeleteButton"
-import EditButton from "../Components/CustomButtons/EditButton"
-import NumberInput from "../Components/CustomInput/NumberInput"
-import DropDownPicker from "react-native-dropdown-picker";
-import Swipeout from 'react-native-swipeout';
+import { View, Text, SafeAreaView, StyleSheet, FlatList, TouchableOpacity, Dimensions, AppState } from "react-native";
 import firebase from "firebase/compat/app";
 import { auth, sendEmailVerification } from "../../Firebase";
 import "firebase/compat/firestore";
 import 'firebase/compat/auth';
-import GetLocation from 'react-native-get-location'
-import * as ImagePicker from 'expo-image-picker'
-import SwipeUpDownModal from 'react-native-swipe-modal-up-down';
-import { ScrollView } from "react-native-gesture-handler";
-import { NavigationContainer, useNavigation } from "@react-navigation/native";
+import { NavigationContainer, useNavigation, useIsFocused } from "@react-navigation/native";
 // import * as storage from "firebase/storage"
 import "firebase/compat/storage";
 import { deleteObject, getDownloadURL, getStorage, ref, uploadBytes, uploadBytesResumable } from "firebase/storage";
 import { getFunctions, httpsCallable } from 'firebase/functions';
+import LottieView from 'lottie-react-native';
+import ModalButtons from '../Components/CustomButtons/ModalButtons'
 
 const OrderQuotesReceiver = () => {
 	const navigation = useNavigation();
 	const [orderList, setOrderList] = useState("");
 	const [userDocReference, setUserDocReference] = useState("");
-
+	const isFocused = useIsFocused();
 
 	useEffect(() => {
 		fetchOrders();
 		fetchUserDoc();
 	}, [])
 
+	useEffect(() => {
+		if (isFocused) {
+			ref.current?.play();
+		}
+
+		AppState.addEventListener("change", appState => {
+			if (appState === "active") {
+				ref.current?.play();
+				console.log(2)
+			}
+		});
+	}, [isFocused, ref.current]);
+
 	const fetchOrders = async () => {
 		try {
 			const list = [];
 			const db = firebase.firestore();
-			const user = auth.currentUser.uid;
+			const user = auth.currentUser.uid; n
 			await db
 				.collection('Orders')
 				.get()
@@ -101,6 +99,12 @@ const OrderQuotesReceiver = () => {
 				<Text style={{ color: "black", fontSize: 25, marginTop: 30, fontWeight: "bold" }}>Orders</Text>
 			</View>
 
+			{orderList[0] == null ? <LottieView source={require("../../assets/lf30_editor_spo1ak28.json")} autoPlay loop ref={ref} /> : null}
+			<View style={{ position: "absolute", top: Dimensions.get("screen").height * 0.70 }}>
+				{orderList[0] == null ? <ModalButtons style={{ fontSize: 25, marginTop: "140%", fontWeight: "400" }} text="Click here to continue shopping" onPress={() => navigation.navigate("My Services")}></ModalButtons> : null}
+			</View>
+
+
 			<SafeAreaView style={styles.container2}>
 
 				<FlatList
@@ -128,14 +132,14 @@ const OrderQuotesReceiver = () => {
 											<Text style={{ fontSize: 15, color: "white" }}>Pending Quote</Text>
 										</View> : null}
 
-										{item.quotable == "quotable" && item.quoted == "true" && item.quoteFinalized == "false" ?
-										<TouchableOpacity style={styles.quoteReady} onPress={() => navigation.navigate("QuoteView", {quoteID: item.quoteID, companyName: item.companyName, serviceName: item.serviceName, quantity: item.quantity})}>
-	<Text style={{ fontSize: 15, color: "white" }}>Quote Draft</Text>
+									{item.quotable == "quotable" && item.quoted == "true" && item.quoteFinalized == "false" ?
+										<TouchableOpacity style={styles.quoteReady} onPress={() => navigation.navigate("QuoteView", { quoteID: item.quoteID, companyName: item.companyName, serviceName: item.serviceName, quantity: item.quantity })}>
+											<Text style={{ fontSize: 15, color: "white" }}>Quote Draft</Text>
 										</TouchableOpacity> : null}
 
-										{item.quotable == "quotable" && item.quoteFinalized == "true" ?
-										<TouchableOpacity style={styles.quoteReady} onPress={() => navigation.navigate("QuoteView", {quoteID: item.quoteID, companyName: item.companyName, serviceName: item.serviceName, quantity: item.quantity})}>
-											<Text style={{ fontSize: 15, color: "white" }}>Quote Finalized</Text>											
+									{item.quotable == "quotable" && item.quoteFinalized == "true" ?
+										<TouchableOpacity style={styles.quoteReady} onPress={() => navigation.navigate("QuoteView", { quoteID: item.quoteID, companyName: item.companyName, serviceName: item.serviceName, quantity: item.quantity })}>
+											<Text style={{ fontSize: 15, color: "white" }}>Quote Finalized</Text>
 										</TouchableOpacity> : null}
 
 								</View>

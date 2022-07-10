@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { View, Text, SafeAreaView, StyleSheet, Alert, FlatList, Modal, KeyboardAvoidingView } from "react-native";
+import { View, Text, SafeAreaView, StyleSheet, Alert, FlatList, Modal, KeyboardAvoidingView, Dimensions } from "react-native";
 import CustomInput from "../Components/CustomInput";
 import firebase from "firebase/compat/app";
 import { auth, sendEmailVerification } from "../../Firebase";
@@ -13,7 +13,7 @@ import Geocoder from 'react-native-geocoding';
 import * as ImagePicker from 'expo-image-picker'
 import { deleteObject, getDownloadURL, getStorage, ref, uploadBytes, uploadBytesResumable } from "firebase/storage";
 import { useNavigation, NavigationContainer } from "@react-navigation/native";
-
+import RNPickerSelect from 'react-native-picker-select';
 
 const Services2 = () => {
 	Geocoder.init("AIzaSyArJjEld2Et5Om2974zFHmMKKuPMXN9QAo");
@@ -26,6 +26,9 @@ const Services2 = () => {
 	const [errorMsg, setErrorMsg] = useState(null);
 	const [Fetch, setFetch] = useState("");
 	const [image, setImage] = useState("");
+	const [rangePickerValue, setRangePickerValue] = useState("");
+	const height = Dimensions.get("screen").height
+	const width = Dimensions.get("screen").width
 
 	useEffect(() => {
 		const fetchUserData = async () => {
@@ -53,7 +56,6 @@ const Services2 = () => {
 					});
 
 				setUserList(list);
-				setFetch(false);
 				console.log(userList)
 
 			} catch (e) {
@@ -62,7 +64,7 @@ const Services2 = () => {
 		};
 		fetchUserData();
 
-	}, [Fetch])
+	}, [])
 
 
 	const addNewUser = async () => {
@@ -99,6 +101,7 @@ const Services2 = () => {
 				companyName: companyName,
 				address: location1,
 				streetAddress: streetAddress,
+				range: rangePickerValue,
 				image: imageURL
 			})
 
@@ -109,6 +112,7 @@ const Services2 = () => {
 				userType: "service provicer",
 				category: serviceCategory,
 				companyName: companyName,
+				range: rangePickerValue,
 				address: location1,
 				streetAddress: streetAddress,
 			})
@@ -140,7 +144,7 @@ const Services2 = () => {
 		let result = await ImagePicker.launchImageLibraryAsync({
 			mediaTypes: ImagePicker.MediaTypeOptions.All,
 			allowsEditing: true,
-			aspect: [1, 1],
+			aspect: [16, 9],
 			quality: 0.5,
 		});
 
@@ -173,27 +177,48 @@ const Services2 = () => {
 				autoCapitalize={"none"}
 			/>
 
+			<RNPickerSelect
+				style={pickerStyle}
+				placeholder={{ label: "Select a range...", value: "default" }}
+				onValueChange={(value) => setRangePickerValue(value)}
+				items={[
+					{ label: '5 km', value: '5' },
+					{ label: '10 km', value: '10' },
+					{ label: '25 km', value: '25' },
+					{ label: '50 km', value: '50' },
+					{ label: '75 km', value: '75' },
+					{ label: '100 km', value: '100' },
+					{ label: '150 km', value: '150' },
+					{ label: '200 km', value: '200' },
+				]}
+			/>
+
 			<View style={{ height: "50%" }}>
 				<GooglePlacesAutocomplete
 					styles={{
 						textInputContainer: {
-							width: 340,
-							height: 45,
-							position: "relative",
-							top: 5,
+							width: width * 0.87,
+							height: height * 0.06,
+							borderColor: "black",
+							borderRadius: 20,
 						},
 
 						textInput: {
-							color: 'black',
-							fontSize: 16,
-							borderRadius: 45,
+							width: width * 0.87,
+							height: height * 0.06,
+							fontSize: 20,
+							borderRadius: 10,
+							marginTop: 7,
+							borderWidth: 0.3,
+							backgroundColor: "white"
 						},
 
 						listView: {
-							position: "absolute",
-							top: "13.5%",
-							width: 340,
-							borderRadius: 35,
+							width: width * 0.87,
+							borderWidth: 0.5,
+							alignContent: "center",
+							borderRadius: 20,
+							marginTop: 10
 						}
 					}}
 					placeholder='Where are you located?'
@@ -216,37 +241,51 @@ const Services2 = () => {
 						language: 'en',
 					}}
 				/>
+
 			</View>
 
 			<ModalButtons onPress={pickImage} text="Add Banner" />
 			<ModalButtons text="Complete Setup" onPress={() => { addNewUser(), navigation.navigate("HomeProvider") }} />
 
-			{/* <View style={styles.inputs}>
-				<View style={styles.container}>
-					<FlatList
-						data={userList}
-						keyExtractor={(item) => item.id}
-						extraData={userList}
-						renderItem={({ item }) => (
-							<SafeAreaView styles={styles.container}>
-								<View style={styles.container}>
-
-		
-
-								</View>
-
-							</SafeAreaView>
-
-						)}
-					/>
-				</View>
-
-
-			</View> */}
-
 
 		</SafeAreaView>
 	);
+};
+
+const pickerStyle = {
+	inputIOS: {
+		height: Dimensions.get("window").height * 0.06,
+		width: Dimensions.get("window").width * 0.87,
+		marginTop: Dimensions.get("window").height * 0.005,
+		marginLeft: Dimensions.get("window").width * 0.065,
+		color: "black",
+		paddingTop: 13,
+		paddingHorizontal: 10,
+		paddingBottom: 12,
+		borderWidth: 0.35,
+		borderRadius: 10,
+	},
+	inputAndroid: {
+		color: 'white',
+	},
+	placeholder: {
+		color: "black"
+	},
+	underline: { borderTopWidth: 0 },
+	icon: {
+		position: 'absolute',
+		backgroundColor: 'transparent',
+		borderTopWidth: 5,
+		borderTopColor: 'black',
+		borderRightWidth: 5,
+		borderRightColor: 'transparent',
+		borderLeftWidth: 5,
+		borderLeftColor: 'transparent',
+		width: 0,
+		height: 0,
+		top: 20,
+		right: 15,
+	},
 };
 
 const styles = StyleSheet.create({
@@ -265,8 +304,9 @@ const styles = StyleSheet.create({
 
 	text: {
 		fontSize: 40,
+		marginBottom: 30,
 		color: "black",
-		marginTop: "15%"
+		marginTop: "7%"
 	}
 
 });

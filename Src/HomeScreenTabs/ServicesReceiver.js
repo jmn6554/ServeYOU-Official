@@ -76,7 +76,7 @@ const Services2 = (trigger) => {
 				}
 				else {
 					// await Location.getCurrentPositionAsync({ accuracy: Location.LocationAccuracy.Medium }).then(loc => { fetchServices(loc), setCurrentAddress(loc), Geocoder.from(loc.coords).then(address => streetAddress.current = address.results[0].address_components[0].long_name + " " + address.results[0].address_components[1].long_name), fetchRecentLocations() });
-					await Location.getCurrentPositionAsync({ accuracy: Location.LocationAccuracy.Balanced}).then(loc => { locationSetting(loc) });
+					await Location.getCurrentPositionAsync({ accuracy: Location.LocationAccuracy.Balanced }).then(loc => { locationSetting(loc) });
 					// console.log(recentLocations);
 				}
 				return;
@@ -88,9 +88,9 @@ const Services2 = (trigger) => {
 
 	const locationSetting = async (loc) => {
 
-		await fetchServices(loc);
 		setCurrentAddress(loc);
 		await Geocoder.from(loc.coords).then(address => { streetAddress.current = address.results[0].address_components[0].long_name + " " + address.results[0].address_components[1].long_name });
+		await fetchServices(loc);
 		await fetchRecentLocations();
 		setLoading(false);
 
@@ -104,8 +104,8 @@ const Services2 = (trigger) => {
 			const user = auth.currentUser.uid;
 			await db
 				.collection('Users')
-				// .where('userType','==', 'service provider')
-				.orderBy("category")
+				.where('userType', '==', 'service provider')
+				.where('range', '<', "250")
 				.get()
 				.then((querySnapshot) => {
 					querySnapshot.forEach((doc) => {
@@ -123,7 +123,7 @@ const Services2 = (trigger) => {
 							loc.coords,
 							address,
 							500000
-						) && userType == "service provider") {
+						)) {
 							list.push({
 								title: category,
 								data: [{
@@ -169,7 +169,7 @@ const Services2 = (trigger) => {
 			const user = auth.currentUser.uid;
 			await db
 				.collection('Users')
-				.where('userType','==', 'service provider')
+				.where('userType', '==', 'service provider')
 				.orderBy('category')
 				.get()
 				.then((querySnapshot) => {
@@ -375,6 +375,7 @@ const Services2 = (trigger) => {
 				</View>
 
 
+
 				<SafeAreaView style={{ position: "absolute", right: 10, bottom: 60 }}>
 					<SearchBar
 						style={{ width: 200, height: 40, backgroundColor: "#d1d4e0", borderRadius: 5 }}
@@ -457,7 +458,7 @@ const Services2 = (trigger) => {
 						</View>
 						<XButton onPress={() => setModalVisible(false)}></XButton>
 
-						<View style={{ zIndex: 1 }}>
+						<View style={{ zIndex: 999 }}>
 							<GooglePlacesAutocomplete
 								styles={{
 									textInputContainer: {
@@ -506,43 +507,44 @@ const Services2 = (trigger) => {
 									language: 'en',
 								}}
 							/>
+						</View>
 
-							<Text style={{ fontSize: 20, marginBottom: 10 }}>Recent Locations</Text>
-							<View style={{ flex: 2, marginBottom: windowHeight * 0.3 }}>
-								<SwipeListView
-									useFlatList
-									data={recentLocations}
-									keyExtractor={(item) => item.id}
-									extraData={recentLocations}
-									ListFooterComponent={<View style={{ height: 0 }} />}
-									renderItem={({ item }) => (
-										<SafeAreaView >
-											<View style={{ width: windowWidth * 0.97, height: windowHeight * 0.1, backgroundColor: "white", borderWidth: 0.5 }}>
-												<Text style={{ fontSize: 10 }}> {item.streetAddress} </Text>
+						<Text style={{ fontSize: 20, position: "absolute", top: windowHeight * 0.10, fontWeight: "bold" }}>Recent Locations</Text>
 
-											</View>
-										</SafeAreaView>
-									)}
-									renderHiddenItem={(item, rowMap) => (
-										<TouchableOpacity onPress={() => { fetchCartPrice(), deleteCartItem(item.item.id), rowMap[item.item.id].closeRow() }}>
-											<View style={{ backgroundColor: "red", height: windowHeight * 0.1, width: 90, borderRadius: 0, justifyContent: "center", alignItems: "center", marginLeft: 275 }}>
-												{/* <View style={{ position: "absolute" }}> */}
-												<Text style={{ fontSize: 20, fontWeight: "500" }}>Delete</Text>
-												{/* </View> */}
-											</View>
-										</TouchableOpacity>
-									)}
-									rightOpenValue={-100}
-									stopRightSwipe={-100}
-									disableRightSwipe={true}
+						<View style={{ position: "absolute", top: windowHeight * 0.20 }}>
+							<SwipeListView
+								useFlatList
+								data={recentLocations}
+								keyExtractor={(item) => item.id}
+								extraData={recentLocations}
+								ListFooterComponent={<View style={{ height: 0 }} />}
+								renderItem={({ item }) => (
+									<SafeAreaView >
+										<View style={{ width: windowWidth * 0.97, height: windowHeight * 0.1, backgroundColor: "white", borderBottomWidth: 0.7, borderRadius: 10, justifyContent: "center", marginBottom: 3 }}>
+											<Text style={{ fontSize: 20 }}> {item.streetAddress} </Text>
 
-								/>
+										</View>
+									</SafeAreaView>
+								)}
+								renderHiddenItem={(item, rowMap) => (
+									<TouchableOpacity onPress={() => { fetchCartPrice(), deleteCartItem(item.item.id), rowMap[item.item.id].closeRow() }}>
+										<View style={{ backgroundColor: "red", height: windowHeight * 0.1, width: 90, borderRadius: 0, justifyContent: "center", alignItems: "center", marginLeft: 275 }}>
+											{/* <View style={{ position: "absolute" }}> */}
+											<Text style={{ fontSize: 20, fontWeight: "500" }}>Delete</Text>
+											{/* </View> */}
+										</View>
+									</TouchableOpacity>
+								)}
+								rightOpenValue={-100}
+								stopRightSwipe={-100}
+								disableRightSwipe={true}
 
-							</View>
+							/>
 
-							<View style={{ alignSelf: "center", position: "absolute", bottom: windowHeight * 0.2 }}>
-								<CustomButton text="Save" onPress={() => { setModalVisible(false), addLocationToRecents(newLocation.current) }} />
-							</View>
+						</View>
+
+						<View style={{ alignSelf: "center", position: "absolute", bottom: windowHeight * 0.2 }}>
+							<CustomButton text="Save" onPress={() => { setModalVisible(false), addLocationToRecents(newLocation.current) }} />
 						</View>
 
 					</View>

@@ -63,25 +63,25 @@ const OrdersQuotesProvider = () => {
 				.get()
 				.then((querySnapshot) => {
 					querySnapshot.forEach((doc) => {
-							list.push({
-								docID: doc.id,
-								user: doc.data().user,
-								subTotal: doc.data().priceSum,
-								companyName: doc.data().companyName,
-								serviceName: doc.data().serviceName,
-								customerID: doc.data().customerID,
-								productID: doc.data().productID,
-								priceID: doc.data().priceID,
-								cartOptions: doc.data().cartOptions,
-								selectedTime: doc.data().selectedTime,
-								selectedDay: doc.data().selectedDay,
-								providerID: doc.data().userID,
-								quotable: doc.data().quotable,
-								quoted: doc.data().quoted,
-								quoteID: doc.data().quoteID,
-								quoteFinalized: doc.data().quoteFinalized,
-							});
-							console.log(doc.data().customerID)
+						list.push({
+							docID: doc.id,
+							user: doc.data().user,
+							subTotal: doc.data().priceSum,
+							companyName: doc.data().companyName,
+							serviceName: doc.data().serviceName,
+							customerID: doc.data().customerID,
+							productID: doc.data().productID,
+							priceID: doc.data().priceID,
+							cartOptions: doc.data().cartOptions,
+							selectedTime: doc.data().selectedTime,
+							selectedDay: doc.data().selectedDay,
+							providerID: doc.data().userID,
+							quotable: doc.data().quotable,
+							quoted: doc.data().quoted,
+							quoteID: doc.data().quoteID,
+							quoteFinalized: doc.data().quoteFinalized,
+						});
+						console.log(doc.data().customerID)
 					});
 				});
 			setOrderList(list);
@@ -92,42 +92,41 @@ const OrdersQuotesProvider = () => {
 		}
 	};
 
-
 	const quoteCustomer = async (quantity) => {
 		const functions = getFunctions()
-		const data = {quantity: quantity, customerID: customerID, priceID: priceID}
+		const data = { quantity: quantity, customerID: customerID, priceID: priceID }
 		const response = await httpsCallable(functions, 'quoteCreation')(data).then(function (result) {
 			const quote = result.data.quote;
 			const db = firebase.firestore();
 			db
-			.collection('Orders')
-			.doc(docID)
-			.update({quoteID: result.data.quote.id, quoted: "true", quoteFinalized: "false", quantity: quantity})
+				.collection('Orders')
+				.doc(docID)
+				.update({ quoteID: result.data.quote.id, quoted: "true", quoteFinalized: "false", quantity: quantity })
 
 			db
-			.collection('Users')
-			.where('userID', '==', userID)
-			.get()
-			.then((querySnapshot) => {
-				querySnapshot.forEach((doc) => {
+				.collection('Users')
+				.where('userID', '==', userID)
+				.get()
+				.then((querySnapshot) => {
+					querySnapshot.forEach((doc) => {
 						updateUserQuoteField(doc.id)
+					});
 				});
-			});
 
 			return {
 				quote: quote
 			};
 		}).catch(console.log)
 
-		const updateUserQuoteField = async (quotedUserDocReference) =>{
-		const db = firebase.firestore();
-		await db
-		.collection('Users')
-		.doc(quotedUserDocReference)
-		.update({newQuote: "true"})
+		const updateUserQuoteField = async (quotedUserDocReference) => {
+			const db = firebase.firestore();
+			await db
+				.collection('Users')
+				.doc(quotedUserDocReference)
+				.update({ newQuote: "true" })
 		}
 		return response
-		
+
 	};
 
 	const quoteFinalized = async (quoteID, docID, userID) => {
@@ -136,34 +135,34 @@ const OrdersQuotesProvider = () => {
 			const quote = result.data.quote;
 			const db = firebase.firestore();
 			db
-			.collection('Orders')
-			.doc(docID)
-			.update({quoteFinalized: "true"})
+				.collection('Orders')
+				.doc(docID)
+				.update({ quoteFinalized: "true" })
 
 			db
-			.collection('Users')
-			.where('userID', '==', userID)
-			.get()
-			.then((querySnapshot) => {
-				querySnapshot.forEach((doc) => {
+				.collection('Users')
+				.where('userID', '==', userID)
+				.get()
+				.then((querySnapshot) => {
+					querySnapshot.forEach((doc) => {
 						updateUserQuoteField(doc.id)
+					});
 				});
-			});
 
 			return {
 				quote: quote
 			};
 		}).catch(console.log)
 
-		const updateUserQuoteField = async (quotedUserDocReference) =>{
-		const db = firebase.firestore();
-		await db
-		.collection('Users')
-		.doc(quotedUserDocReference)
-		.update({newQuote: "true"})
+		const updateUserQuoteField = async (quotedUserDocReference) => {
+			const db = firebase.firestore();
+			await db
+				.collection('Users')
+				.doc(quotedUserDocReference)
+				.update({ newQuote: "true" })
 		}
 		return response
-		
+
 	};
 
 
@@ -197,19 +196,19 @@ const OrdersQuotesProvider = () => {
 									</SafeAreaView>
 									<Text style={{ color: "black", fontSize: 15, marginLeft: "42%", marginTop: "3%" }}> Date: {item.selectedDay} at {Math.trunc(item.selectedTime)}:{((item.selectedTime % 1) * 60)}{item.selectedTime % 1 == 0 ? "0" : null} {Math.trunc(item.selectedTime) > 10 ? "PM" : "AM"}</Text>
 
-									{item.quotable == "quotable" && item.quoteID == undefined?
-										<TouchableOpacity style={styles.quote} onPress={() => {setModalVisible(true), console.log(item.selectedTime % 1), setCustomerID(item.customerID), setPriceID(item.priceID), setDocID(item.docID), setUserID(item.user), fetchOrders()}}>
+									{item.quotable == "quotable" && item.quoteID == undefined ?
+										<TouchableOpacity style={styles.quote} onPress={() => { setModalVisible(true), console.log(item.selectedTime % 1), setCustomerID(item.customerID), setPriceID(item.priceID), setDocID(item.docID), setUserID(item.user), fetchOrders() }}>
 											<Text style={{ fontSize: 15, color: "white" }}>Create Quote</Text>
 										</TouchableOpacity> : null}
 
-										{item.quotable == "quotable" && item.quoted == "true" ?
-										<TouchableOpacity style={styles.quoteFinalized} onPress={() => {quoteFinalized(item.quoteID, item.docID, item.user), fetchOrders()}}>
+									{item.quotable == "quotable" && item.quoted == "true" ?
+										<TouchableOpacity style={styles.quoteFinalized} onPress={() => { quoteFinalized(item.quoteID, item.docID, item.user), fetchOrders() }}>
 											<Text style={{ fontSize: 15, color: "white" }}>Finalize Quote</Text>
 										</TouchableOpacity> : null}
 
-										{item.quotable == "quotable" && item.quoteFinalized == "true" ?
+									{item.quotable == "quotable" && item.quoteFinalized == "true" ?
 										<View style={styles.quotePending}>
-											<Text style={{ fontSize: 15, color: "white"}}>Pending</Text>
+											<Text style={{ fontSize: 15, color: "white" }}>Pending</Text>
 										</View> : null}
 
 
@@ -217,57 +216,57 @@ const OrdersQuotesProvider = () => {
 							</SafeAreaView>
 							<SafeAreaView >
 
-<SwipeUpDownModal
-	modalVisible={modalVisible}
-	PressToanimate={animateModal}
-	//if you don't pass HeaderContent you should pass marginTop in view of ContentModel to Make modal swipeable
-	ContentModal={
-		<Pressable onPress={() => Keyboard.dismiss()}>
-			<View style={styles.modalView}>
-				<View style={styles.container3}>
-					<Text style={{ fontSize: 30, fontWeight: "bold", color: "black", marginBottom: 40, }}>Quote Customer</Text>
+								<SwipeUpDownModal
+									modalVisible={modalVisible}
+									PressToanimate={animateModal}
+									//if you don't pass HeaderContent you should pass marginTop in view of ContentModel to Make modal swipeable
+									ContentModal={
+										<Pressable onPress={() => Keyboard.dismiss()}>
+											<View style={styles.modalView}>
+												<View style={styles.container3}>
+													<Text style={{ fontSize: 30, fontWeight: "bold", color: "black", marginBottom: 40, }}>Quote Customer</Text>
 
-					<KeyboardAvoidingView behavior="height" style={{ flex: 1 }} >
-				
-						<NumberInput
-							placeholder="Quantity"
-							value={quantity}
-							setValue={setQuantity}
-							autoCorrect={true}
-							autoCapitalize={"none"}
-						/>
+													<KeyboardAvoidingView behavior="height" style={{ flex: 1 }} >
 
-						<ModalButtons
-							text="Send Quote"
-							onPress={() => {setModalVisible(false), quoteCustomer(quantity)}}
-						/>
-						<ModalButtons
-							text="Cancel"
-							onPress={() => setModalVisible(false)}
-						/>
-					</KeyboardAvoidingView>
+														<NumberInput
+															placeholder="Quantity"
+															value={quantity}
+															setValue={setQuantity}
+															autoCorrect={true}
+															autoCapitalize={"none"}
+														/>
 
-				</View>
-			</View>
-		</Pressable>
-	}
-	HeaderStyle={styles.headerContent}
-	ContentModalStyle={styles.Modal}
-	HeaderContent={
-		<View style={styles.containerHeader}>
+														<ModalButtons
+															text="Send Quote"
+															onPress={() => { setModalVisible(false), quoteCustomer(quantity) }}
+														/>
+														<ModalButtons
+															text="Cancel"
+															onPress={() => setModalVisible(false)}
+														/>
+													</KeyboardAvoidingView>
 
-		</View>
-	}
-	onClose={() => {
-		setModalVisible(false);
-		setanimateModal(false);
-	}}
-/>
+												</View>
+											</View>
+										</Pressable>
+									}
+									HeaderStyle={styles.headerContent}
+									ContentModalStyle={styles.Modal}
+									HeaderContent={
+										<View style={styles.containerHeader}>
+
+										</View>
+									}
+									onClose={() => {
+										setModalVisible(false);
+										setanimateModal(false);
+									}}
+								/>
 
 
-</SafeAreaView>
+							</SafeAreaView>
 
-		</SafeAreaView>
+						</SafeAreaView>
 
 					)}
 				/>
