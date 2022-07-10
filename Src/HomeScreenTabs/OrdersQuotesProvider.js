@@ -28,7 +28,7 @@ import { deleteObject, getDownloadURL, getStorage, ref, uploadBytes, uploadBytes
 import { getFunctions, httpsCallable } from 'firebase/functions';
 
 
-const Services2 = () => {
+const OrdersQuotesProvider = () => {
 	const [name, setName] = useState("");
 	const [description, setDescription] = useState("");
 	const [quantity, setQuantity] = useState("");
@@ -45,6 +45,8 @@ const Services2 = () => {
 	const [priceID, setPriceID] = useState("");
 	const [docID, setDocID] = useState("");
 	const [userID, setUserID] = useState("");
+	const [count, setCount] = useState("");
+	var tempCount = 0;
 
 	useEffect(() => {
 		fetchOrders();
@@ -83,6 +85,8 @@ const Services2 = () => {
 					});
 				});
 			setOrderList(list);
+			tempCount += 1;
+			setCount(tempCount)
 		} catch (e) {
 			console.log(e);
 		}
@@ -98,7 +102,7 @@ const Services2 = () => {
 			db
 			.collection('Orders')
 			.doc(docID)
-			.update({quoteID: result.data.quote.id, quoted: "true", quoteFinalized: "false"})
+			.update({quoteID: result.data.quote.id, quoted: "true", quoteFinalized: "false", quantity: quantity})
 
 			db
 			.collection('Users')
@@ -193,20 +197,20 @@ const Services2 = () => {
 									</SafeAreaView>
 									<Text style={{ color: "black", fontSize: 15, marginLeft: "42%", marginTop: "3%" }}> Date: {item.selectedDay} at {Math.trunc(item.selectedTime)}:{((item.selectedTime % 1) * 60)}{item.selectedTime % 1 == 0 ? "0" : null} {Math.trunc(item.selectedTime) > 10 ? "PM" : "AM"}</Text>
 
-									{item.quotable == "quotable" ?
-										<TouchableOpacity style={styles.quote} onPress={() => {setModalVisible(true), console.log(item.selectedTime % 1), setCustomerID(item.customerID), setPriceID(item.priceID), setDocID(item.docID), setUserID(item.user)}}>
+									{item.quotable == "quotable" && item.quoteID == undefined?
+										<TouchableOpacity style={styles.quote} onPress={() => {setModalVisible(true), console.log(item.selectedTime % 1), setCustomerID(item.customerID), setPriceID(item.priceID), setDocID(item.docID), setUserID(item.user), fetchOrders()}}>
 											<Text style={{ fontSize: 15, color: "white" }}>Create Quote</Text>
 										</TouchableOpacity> : null}
 
-										{item.quotable == "quotable" && item.quoted == "true" && item.quoteFinalized == false ?
-										<TouchableOpacity style={styles.quoteFinalized} onPress={() => {quoteFinalized(item.quoteID, item.docID, item.user)}}>
+										{item.quotable == "quotable" && item.quoted == "true" ?
+										<TouchableOpacity style={styles.quoteFinalized} onPress={() => {quoteFinalized(item.quoteID, item.docID, item.user), fetchOrders()}}>
 											<Text style={{ fontSize: 15, color: "white" }}>Finalize Quote</Text>
 										</TouchableOpacity> : null}
 
 										{item.quotable == "quotable" && item.quoteFinalized == "true" ?
-										<TouchableOpacity style={styles.quotePending} onPress={() => {quoteFinalized(item.quoteID, item.docID, item.user)}}>
+										<View style={styles.quotePending}>
 											<Text style={{ fontSize: 15, color: "white"}}>Pending</Text>
-										</TouchableOpacity> : null}
+										</View> : null}
 
 
 								</View>
@@ -480,4 +484,4 @@ const styles = StyleSheet.create({
 
 
 });
-export default Services2;
+export default OrdersQuotesProvider;

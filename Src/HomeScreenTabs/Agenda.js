@@ -59,6 +59,7 @@ const Agendas = ({ route }) => {
 	}
 
 	const addToCart = async () => {
+		if (route.params)
 		var cartCounter = 0;
 		const db = firebase.firestore();
 		const user = auth.currentUser.uid;
@@ -72,7 +73,7 @@ const Agendas = ({ route }) => {
 			selectedTime: selectedTime,
 			selectedDay: route.params.date,
 			providerID: route.params.userID
-		}).then(() => { console.log("Service Added") })
+		}).then(() => { console.log("Service Added") }).catch(e => console.log(e))
 		global.cartCount += 1;
 		// global.cartItemCounter = cartCounter;
 	}

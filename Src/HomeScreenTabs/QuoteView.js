@@ -1,18 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import { View, Text, SafeAreaView, StyleSheet, Alert, FlatList, Modal, Image, KeyboardAvoidingView, TouchableOpacity, Pressable, Keyboard, Dimensions } from "react-native";
-import { SpeedDial, Overlay } from 'react-native-elements';
-import GestureRecognizer from 'react-native-swipe-gestures';
-import CustomInput from "../Components/CustomInput";
-import CustomButton from "../Components/CustomButtons/CustomButton";
-import ModalButtons from "../Components/CustomButtons/ModalButtons";
-import ModalButton2 from "../Components/CustomButtons/ModalButton2"
-import ElipseButton from "../Components/CustomButtons/ElipseButton"
-import PlusButton from "../Components/CustomButtons/PlusButton"
-import DeleteButton from "../Components/CustomButtons/DeleteButton"
-import EditButton from "../Components/CustomButtons/EditButton"
-import NumberInput from "../Components/CustomInput/NumberInput"
-import DropDownPicker from "react-native-dropdown-picker";
-import Swipeout from 'react-native-swipeout';
 import firebase from "firebase/compat/app";
 import { auth, sendEmailVerification } from "../../Firebase";
 import "firebase/compat/firestore";
@@ -35,6 +22,8 @@ const QuoteView = ({route}) => {
 	const [userDocReference, setUserDocReference] = useState("");
 	const [quoteObject, setQuoteObject] = useState("");
 	const [loading, setLoading] = useState(true);
+	const height =  Dimensions.get("screen").height
+	const width =  Dimensions.get("screen").width
 
 	useEffect(() => {
 		fetchQuote();
@@ -105,10 +94,26 @@ const QuoteView = ({route}) => {
 
 			{loading == true ? null :
 			<View>
-			<Text style={{ color: "black", fontSize: 25, marginTop: 30, fontWeight: "bold" }}>$ {quoteObject.amount_total/100}</Text>
-			<Text style={{ color: "black", fontSize: 25, marginTop: 30, fontWeight: "bold" }}>Expires: {moment.unix(quoteObject.expires_at).format("DD-MM-yyyy, HH:mm")}</Text>
-			<Text style={{ color: "black", fontSize: 25, marginTop: 30, fontWeight: "bold" }}>Expires: {moment.unix(quoteObject.expires_at).format("DD-MM-yyyy, HH:mm")}</Text>
-			<Text style={{ color: "black", fontSize: 25, marginTop: 30, fontWeight: "bold" }}>Expires: {moment.unix(quoteObject.expires_at).format("DD-MM-yyyy, HH:mm")}</Text>
+			<View style={{borderTopWidth: 1, position:"absolute", top: height * 0.12, width: width * 1}}>
+			</View>
+			<Text style={{ color: "black", fontSize: 25, fontWeight: "bold", top: height * 0.13, }}>{route.params.companyName}</Text>
+			<Text style={{ color: "black", fontSize: 13, position:"absolute", top: height * 0.18, right: width * 0.05, fontWeight: "bold" }}>Quote Number {quoteObject.number}</Text>
+			<Text style={{ color: "black", fontSize: 14, position:"absolute", top: height * 0.23, left: width * 0.03, fontWeight: "bold" }}>Quote For</Text>
+			<Text style={{ color: "black", fontSize: 13, position:"absolute", top: height * 0.25, left: width * 0.03, fontWeight: "400" }}>{auth.currentUser.email}</Text>
+			<Text style={{ color: "black", fontSize: 15, position:"absolute", top: height * 0.20, right: width * 0.05, fontWeight: "500" }}>Issued: {moment.unix(quoteObject.status_transitions.finalized_at).format("DD MMM, yyyy")}</Text>
+			<View style={{borderTopWidth: 1, position:"absolute", top: height * 0.28, width: width * 1}}>
+			</View>
+			<Text style={{ color: "black", fontSize: 21, position:"absolute", top: height * 0.3, fontWeight: "bold" }}>Description</Text>
+			<Text style={{ color: "black", fontSize: 15, position:"absolute", top: height * 0.05, right: width * 0.05, fontWeight: "500" }}>Valid until: {moment.unix(quoteObject.expires_at).format("DD MMM, yyyy")}</Text>
+			<Text style={{ color: "black", fontSize: 21, position:"absolute", top: height * 0.3, right: width * 0.5, fontWeight: "bold" }}>QTY</Text>
+			<Text style={{ color: "black", fontSize: 21, position:"absolute", top: height * 0.3, right: width * 0.05, fontWeight: "bold" }}>Amount</Text>
+			<Text style={{ color: "black", fontSize: 21, position:"absolute", top: height * 0.35, right: width * 0.5, fontWeight: "bold" }}>{route.params.quantity}</Text>
+			<Text style={{ color: "black", fontSize: 22, position:"absolute", top: height * 0.35, fontWeight: "400" }}>{route.params.serviceName.current.name}</Text>
+			<Text style={{ color: "black", fontSize: 18, position:"absolute", top: height * 0.08, right: width * 0.05, fontWeight: "bold" }}>${quoteObject.amount_total/100}</Text>
+			<Text style={{ color: "black", fontSize: 22, position:"absolute", top: height * 0.35, right: width * 0.05, fontWeight: "400" }}>${quoteObject.amount_total/100}</Text>
+			<View style={{borderTopWidth: 1, position:"absolute", top: height * 0.73, width: width * 1}}>
+			</View>
+			<Text style={{ color: "black", fontSize: 22, position:"absolute", top: height * 0.75, right: width * 0.05, fontWeight: "400" }}>Quote Total: ${quoteObject.amount_total/100}</Text>
 
 			</View>
 }
@@ -116,14 +121,14 @@ const QuoteView = ({route}) => {
 
 
 		</SafeAreaView >
-	);
+	);n
 };
 
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		alignItems: "center",
-		justifyContent: "center",
+		// alignItems: "center",
+		// justifyContent: "center",
 		padding: 15,
 		width: "100%",
 		height: "100%"

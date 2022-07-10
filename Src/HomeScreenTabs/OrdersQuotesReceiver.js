@@ -58,6 +58,7 @@ const OrderQuotesReceiver = () => {
 								priceID: doc.data().priceID,
 								quoteID: doc.data().quoteID,
 								quoted: doc.data().quoted,
+								quantity: doc.data().quantity,
 								cartOptions: doc.data().cartOptions,
 								selectedTime: doc.data().selectedTime,
 								selectedDay: doc.data().selectedDay,
@@ -127,13 +128,13 @@ const OrderQuotesReceiver = () => {
 											<Text style={{ fontSize: 15, color: "white" }}>Pending Quote</Text>
 										</View> : null}
 
-										{item.quotable == "quotable" && item.quoted == "true" ?
-										<TouchableOpacity style={styles.quoteReady} onPress={() => navigation.navigate("QuoteView", {quoteID: item.quoteID, companyName: item.companyName, serviceName: item.serviceName})}>
+										{item.quotable == "quotable" && item.quoted == "true" && item.quoteFinalized == "false" ?
+										<TouchableOpacity style={styles.quoteReady} onPress={() => navigation.navigate("QuoteView", {quoteID: item.quoteID, companyName: item.companyName, serviceName: item.serviceName, quantity: item.quantity})}>
 	<Text style={{ fontSize: 15, color: "white" }}>Quote Draft</Text>
 										</TouchableOpacity> : null}
 
 										{item.quotable == "quotable" && item.quoteFinalized == "true" ?
-										<TouchableOpacity style={styles.quoteReady} onPress={() => navigation.navigate("QuoteView", {quoteID: item.quoteID, companyName: item.companyName, serviceName: item.serviceName})}>
+										<TouchableOpacity style={styles.quoteReady} onPress={() => navigation.navigate("QuoteView", {quoteID: item.quoteID, companyName: item.companyName, serviceName: item.serviceName, quantity: item.quantity})}>
 											<Text style={{ fontSize: 15, color: "white" }}>Quote Finalized</Text>											
 										</TouchableOpacity> : null}
 
