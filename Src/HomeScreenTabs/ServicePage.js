@@ -18,7 +18,6 @@ import {
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import uuid from 'react-native-uuid';
 import * as Haptics from 'expo-haptics';
-import LottieView from 'lottie-react-native';
 
 const Services3 = ({ route, navigation }) => {
 	const isFocused = useIsFocused();

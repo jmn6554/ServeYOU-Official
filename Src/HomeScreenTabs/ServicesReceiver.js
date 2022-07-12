@@ -456,9 +456,50 @@ const Services2 = (trigger) => {
 						<View style={styles.container3}>
 							<Text style={{ fontSize: 25, fontWeight: "bold", color: "black" }}>Location</Text>
 						</View>
+
+						<Text style={{ fontSize: 20, position: "absolute", top: windowHeight * 0.19, left: 0, fontWeight: "bold" }}>Recent Locations</Text>
+
+						<View style={{ alignSelf: "center", position: "absolute", bottom: windowHeight * 0.15 }}>
+							<CustomButton text="Save" onPress={() => { setModalVisible(false), addLocationToRecents(newLocation.current) }} />
+						</View>
 						<XButton onPress={() => setModalVisible(false)}></XButton>
 
-						<View style={{ zIndex: 999 }}>
+						<View style={{ backgroundColor: "transparent", height: 500 }}>
+
+							<View style={{ position: "absolute", top: windowHeight * 0.15 }}>
+
+								<SwipeListView
+									useFlatList
+									// style={{ position: "absolute", top: windowHeight * 0.15, zIndex: 1 }}
+									data={recentLocations}
+									keyExtractor={(item) => item.id}
+									extraData={recentLocations}
+									ListFooterComponent={<View style={{ height: 0 }} />}
+									renderItem={({ item }) => (
+										<SafeAreaView >
+											<View style={{ width: windowWidth * 0.97, height: windowHeight * 0.07, backgroundColor: "white", borderBottomWidth: 0.7, borderRadius: 10, justifyContent: "center", marginBottom: 3 }}>
+												<Text style={{ fontSize: 20 }}> {item.streetAddress} </Text>
+
+											</View>
+										</SafeAreaView>
+									)}
+									renderHiddenItem={(item, rowMap) => (
+										<TouchableOpacity onPress={() => { fetchCartPrice(), deleteCartItem(item.item.id), rowMap[item.item.id].closeRow() }}>
+											<View style={{ backgroundColor: "red", height: windowHeight * 0.1, width: 90, borderRadius: 0, justifyContent: "center", alignItems: "center", marginLeft: 275 }}>
+												{/* <View style={{ position: "absolute" }}> */}
+												<Text style={{ fontSize: 20, fontWeight: "500" }}>Delete</Text>
+												{/* </View> */}
+											</View>
+										</TouchableOpacity>
+									)}
+									rightOpenValue={-100}
+									stopRightSwipe={-100}
+									disableRightSwipe={true}
+
+								/>
+
+							</View>
+
 							<GooglePlacesAutocomplete
 								styles={{
 									textInputContainer: {
@@ -479,7 +520,8 @@ const Services2 = (trigger) => {
 									},
 
 									listView: {
-										width: 355,
+										width: windowWidth * 0.97,
+										height: windowHeight * 0.2,
 										borderWidth: 0.5,
 										alignContent: "center",
 										borderRadius: 15,
@@ -507,44 +549,7 @@ const Services2 = (trigger) => {
 									language: 'en',
 								}}
 							/>
-						</View>
 
-						<Text style={{ fontSize: 20, position: "absolute", top: windowHeight * 0.10, fontWeight: "bold" }}>Recent Locations</Text>
-
-						<View style={{ position: "absolute", top: windowHeight * 0.20 }}>
-							<SwipeListView
-								useFlatList
-								data={recentLocations}
-								keyExtractor={(item) => item.id}
-								extraData={recentLocations}
-								ListFooterComponent={<View style={{ height: 0 }} />}
-								renderItem={({ item }) => (
-									<SafeAreaView >
-										<View style={{ width: windowWidth * 0.97, height: windowHeight * 0.1, backgroundColor: "white", borderBottomWidth: 0.7, borderRadius: 10, justifyContent: "center", marginBottom: 3 }}>
-											<Text style={{ fontSize: 20 }}> {item.streetAddress} </Text>
-
-										</View>
-									</SafeAreaView>
-								)}
-								renderHiddenItem={(item, rowMap) => (
-									<TouchableOpacity onPress={() => { fetchCartPrice(), deleteCartItem(item.item.id), rowMap[item.item.id].closeRow() }}>
-										<View style={{ backgroundColor: "red", height: windowHeight * 0.1, width: 90, borderRadius: 0, justifyContent: "center", alignItems: "center", marginLeft: 275 }}>
-											{/* <View style={{ position: "absolute" }}> */}
-											<Text style={{ fontSize: 20, fontWeight: "500" }}>Delete</Text>
-											{/* </View> */}
-										</View>
-									</TouchableOpacity>
-								)}
-								rightOpenValue={-100}
-								stopRightSwipe={-100}
-								disableRightSwipe={true}
-
-							/>
-
-						</View>
-
-						<View style={{ alignSelf: "center", position: "absolute", bottom: windowHeight * 0.2 }}>
-							<CustomButton text="Save" onPress={() => { setModalVisible(false), addLocationToRecents(newLocation.current) }} />
 						</View>
 
 					</View>
