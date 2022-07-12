@@ -22,6 +22,7 @@ import * as ImagePicker from 'expo-image-picker'
 import SwipeUpDownModal from 'react-native-swipe-modal-up-down';
 import { ScrollView } from "react-native-gesture-handler";
 import { getFunctions, httpsCallable } from 'firebase/functions';
+import LottieView from 'lottie-react-native';
 
 const Services2 = ({ route }) => {
 	const [name, setName] = useState("");
@@ -37,7 +38,8 @@ const Services2 = ({ route }) => {
 	const [animateModal2, setanimateModal2] = useState(true);
 	const [open, setOpen] = useState(false);
 	const [value, setValue] = useState(null);
-	const [reload, setReload] = useState(0)
+	const [loading, setLoading] = useState(false);
+	const ref = React.useRef();
 	const [items, setItems] = useState([
 		{ label: 'Options', value: 'Options' },
 		{ label: 'Packages', value: 'Packages' }
@@ -47,7 +49,6 @@ const Services2 = ({ route }) => {
 
 	useEffect(() => {
 		fetchServices();
-
 	}, [Fetch])
 
 	const addService = async (priceID) => {
@@ -59,11 +60,12 @@ const Services2 = ({ route }) => {
 			name: name,
 			description: description,
 			price: price,
-			PriceID: priceID,
+			priceID: priceID,
 			user: user,
 			created: firebase.firestore.Timestamp.now(),
 		}).then(() => { console.log("Option/Package Added") })
 		fetchServices();
+		setLoading(false);
 
 	}
 
@@ -174,7 +176,7 @@ const Services2 = ({ route }) => {
 		const data = { name: name, price: price * 100 }
 		const functions = getFunctions()
 		const response = await httpsCallable(functions, 'priceCreation')(data).then(function (result) {
-			addService(result.data.product.id);
+			addService(result.data.price.id);
 			const price = result.data.price;
 			const product = result.data.product;
 			return {
@@ -187,6 +189,7 @@ const Services2 = ({ route }) => {
 
 
 	const addSaveService = () => {
+		setLoading(true);
 		createStripePrice();
 		setModalVisible(false);
 		setFetch(true);
@@ -216,7 +219,7 @@ const Services2 = ({ route }) => {
 				<Text style={{ color: "black", fontSize: 25, marginTop: 30, fontWeight: "bold" }}>Service Options</Text>
 			</View>
 
-			<SafeAreaView style={styles.container2}>
+			{loading == false ? <SafeAreaView style={styles.container2}>
 
 				<SectionList
 					sections={serviceList}
@@ -333,7 +336,7 @@ const Services2 = ({ route }) => {
 				/>
 
 			</SafeAreaView>
-
+				: <LottieView source={require("../../assets/50738-loading-line.json")} autoPlay loop ref={ref} />}
 
 			<SafeAreaView >
 

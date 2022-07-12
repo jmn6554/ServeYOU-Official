@@ -26,8 +26,9 @@ const Services2 = ({ route }) => {
 	const [modalVisible, setModalVisible] = useState(false);
 	const [animateModal, setanimateModal] = useState(true);
 	const navigation = useNavigation();
+	const [priceIDArray, setPriceIDArray] = useState([route.params.priceID]);
 
-	console.log(route.params.quotable)
+	// console.log(route.params.quotable)
 
 	useEffect(() => {
 		const fetchOptions = async () => {
@@ -39,7 +40,7 @@ const Services2 = ({ route }) => {
 				const user = auth.currentUser.uid;
 				await db
 					.collection('Options&Packages')
-					// .orderBy("category")
+					.where('user', '==', route.params.userID)
 					.get()
 					.then((querySnapshot) => {
 						querySnapshot.forEach((doc) => {
@@ -47,12 +48,13 @@ const Services2 = ({ route }) => {
 								name,
 								description,
 								price,
+								priceID,
 								image,
 								created,
 								category,
-								serviceName
+								serviceName,
 							} = doc.data();
-							if (doc.data().user == route.params.userID && serviceName == route.params.serviceName) {
+							if (serviceName == route.params.serviceName) {
 								list.push({
 									title: category,
 									data: [{
@@ -60,6 +62,7 @@ const Services2 = ({ route }) => {
 										name: name,
 										description: description,
 										price: price,
+										priceID: priceID,
 										image: image,
 										created: created
 									}]
@@ -147,6 +150,19 @@ const Services2 = ({ route }) => {
 		}
 	}
 
+	const mergePriceID = (itemName, priceID) => {
+		// console.log(check.current[itemName])
+		if (check.current[itemName] == "transparent") {
+			var index = priceIDArray.indexOf(priceID)
+			priceIDArray.splice(index, 1)
+			setPriceIDArray(...priceIDArray)
+		}
+		else if (check.current[itemName] == "#0b84db") {
+			priceIDArray.push(priceID)
+		}
+		console.log(priceIDArray)
+	}
+
 	const nextDays = [
 		'2022-03-01',
 		'2022-03-05',
@@ -201,7 +217,6 @@ const Services2 = ({ route }) => {
 									}
 									pastScrollRange={0}
 									futureScrollRange={3}
-									pastScrollRange={0}
 									minDate={new Date()}
 								/>
 
@@ -244,7 +259,7 @@ const Services2 = ({ route }) => {
 
 								<Text style={{ color: "gray", fontWeight: "bold", fontSize: 18 }}>{item.description}</Text>
 
-								<TouchableOpacity onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium), checkBoxState(index, item.name), addCartItems(index, item.name, item.description, item.price) }}>
+								<TouchableOpacity onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium), checkBoxState(index, item.name), addCartItems(index, item.name, item.description, item.price, item.priceID), mergePriceID(item.name, item.priceID) }}>
 									<View style={{ width: 30, height: 30, borderColor: "black", borderWidth: 1.2, borderRadius: 10, backgroundColor: check.current[item.name], position: "absolute", right: "7%", bottom: "10%" }}>
 
 										<Ionicons
