@@ -92,8 +92,7 @@ const Cart = () => {
 			const db = firebase.firestore();
 			await db
 				.collection('Cart')
-				.where('userID', "==", auth.currentUser.uid)
-				.orderBy("companyName")
+				.where('user', "==", auth.currentUser.uid)
 				.get()
 				.then((querySnapshot) => {
 					querySnapshot.forEach((doc) => {

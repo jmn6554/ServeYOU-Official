@@ -40,34 +40,34 @@ const OrderQuotesReceiver = () => {
 		try {
 			const list = [];
 			const db = firebase.firestore();
-			const user = auth.currentUser.uid; n
+			const user = auth.currentUser.uid;
 			await db
 				.collection('Orders')
+				.where("user", "==", auth.currentUser.uid)
 				.get()
 				.then((querySnapshot) => {
 					querySnapshot.forEach((doc) => {
-						if (doc.data().user == user) {
-							list.push({
-								user: doc.data().user,
-								subTotal: doc.data().priceSum,
-								companyName: doc.data().companyName,
-								serviceName: doc.data().serviceName,
-								productID: doc.data().productID,
-								priceID: doc.data().priceID,
-								quoteID: doc.data().quoteID,
-								quoted: doc.data().quoted,
-								quantity: doc.data().quantity,
-								cartOptions: doc.data().cartOptions,
-								selectedTime: doc.data().selectedTime,
-								selectedDay: doc.data().selectedDay,
-								providerID: doc.data().userID,
-								quotable: doc.data().quotable,
-								quoteFinalized: doc.data().quoteFinalized,
-							});
-						}
+						list.push({
+							user: doc.data().user,
+							subTotal: doc.data().priceSum,
+							companyName: doc.data().companyName,
+							serviceName: doc.data().serviceName,
+							productID: doc.data().productID,
+							priceID: doc.data().priceID,
+							quoteID: doc.data().quoteID,
+							quoted: doc.data().quoted,
+							quantity: doc.data().quantity,
+							cartOptions: doc.data().cartOptions,
+							selectedTime: doc.data().selectedTime,
+							selectedDay: doc.data().selectedDay,
+							providerID: doc.data().userID,
+							quotable: doc.data().quotable,
+							quoteFinalized: doc.data().quoteFinalized,
+						});
 					});
 				});
 			setOrderList(list);
+			console.log(orderList)
 		} catch (e) {
 			console.log(e);
 		}
