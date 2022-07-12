@@ -92,6 +92,7 @@ const Cart = () => {
 			const db = firebase.firestore();
 			await db
 				.collection('Cart')
+				.where('userID', "==", auth.currentUser.uid)
 				.orderBy("companyName")
 				.get()
 				.then((querySnapshot) => {
@@ -106,21 +107,19 @@ const Cart = () => {
 							subTotal,
 							providerID
 						} = doc.data();
-						if (doc.data().user == auth.currentUser.uid) {
-							cartCounter += 1;
-							list.push({
-								id: doc.id,
-								user: user,
-								providerID: providerID,
-								companyName: companyName,
-								serviceName: serviceName,
-								cartOptions: cartOptions,
-								selectedTime: selectedTime,
-								selectedDay: selectedDay,
-								subTotal: subTotal
+						cartCounter += 1;
+						list.push({
+							id: doc.id,
+							user: user,
+							providerID: providerID,
+							companyName: companyName,
+							serviceName: serviceName,
+							cartOptions: cartOptions,
+							selectedTime: selectedTime,
+							selectedDay: selectedDay,
+							subTotal: subTotal
 
-							});
-						}
+						});
 					});
 				});
 			// setCartItemCount(cartCounter);
@@ -471,8 +470,8 @@ const Cart = () => {
 
 				</SafeAreaView>
 
-				<View style={{position: "absolute", top: Dimensions.get("screen").height * 0.70}}>
-				{serviceList[0] == null && loading == false ? <ModalButtons style={{ fontSize: 25, marginTop: "140%", fontWeight: "400" }} text="Click here to continue shopping" onPress={() => navigation.navigate("My Services")}></ModalButtons> : null}
+				<View style={{ position: "absolute", top: Dimensions.get("screen").height * 0.70 }}>
+					{serviceList[0] == null && loading == false ? <ModalButtons style={{ fontSize: 25, marginTop: "140%", fontWeight: "400" }} text="Click here to continue shopping" onPress={() => navigation.navigate("My Services")}></ModalButtons> : null}
 				</View>
 
 

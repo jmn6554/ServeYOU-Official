@@ -49,7 +49,7 @@ const Services2 = (trigger) => {
 	const [animateModal, setanimateModal] = useState(true);
 	const windowWidth = Dimensions.get('screen').width;
 	const windowHeight = Dimensions.get('screen').height;
-	// const [streetAddress, setStreetAddress] = useState("");
+	const [currentUserDocID, setCurrentUserDocID] = useState("");
 
 	useEffect(() => {
 		if (isFocused && serviceList != "" || serviceList != null || serviceList != undefined) {
@@ -295,9 +295,7 @@ const Services2 = (trigger) => {
 				setServiceList(serviceList.splice(serviceList.indexOf(e), 1));
 				// console.log(serviceList)
 			}
-
 		})
-
 	}
 
 	const fetchRecentLocations = async () => {
@@ -305,14 +303,18 @@ const Services2 = (trigger) => {
 		const db = firebase.firestore();
 		await db
 			.collection('Users')
+			.where("userID", "==", auth.currentUser.uid)
 			.get()
 			.then((querySnapshot) => {
 				querySnapshot.forEach((doc) => {
-					if (doc.data().userID == auth.currentUser.uid && doc.data().recentLocations != undefined) {
+					setCurrentUserDocID(doc.id);
+					console.log(doc.id)
+
+					if (doc.data().recentLocations != undefined) {
 						recentLocationsTemp = doc.data().recentLocations;
-						// console.log(doc.data().recentLocations)
 					}
-					else if (doc.data().userID == auth.currentUser.uid && doc.data().recentLocations == undefined) {
+
+					else if (doc.data().recentLocations == undefined) {
 						recentLocationsTemp = [];
 					}
 				});
@@ -325,14 +327,22 @@ const Services2 = (trigger) => {
 		const db = firebase.firestore();
 		await db
 			.collection('Users')
+			.where("userID", "==", auth.currentUser.uid)
 			.get()
 			.then((querySnapshot) => {
 				querySnapshot.forEach((doc) => {
-					if (doc.data().userID == auth.currentUser.uid) {
-						db.collection("Users").doc(doc.id).update({ recentLocations: recentLocations })
-					}
+					db.collection("Users").doc(doc.id).update({ recentLocations: recentLocations })
 				});
 			});
+	}
+
+	const deleteRecentLocation = async (rowID) => {
+		const db = firebase.firestore();
+		recentLocations.splice(rowID, 1);
+		setRecentLocations([...recentLocations]);
+		await db.collection("Users").doc(currentUserDocID).update({ recentLocations: recentLocations });
+		fetchRecentLocations();
+
 	}
 
 	const onRefresh = React.useCallback(() => {
@@ -477,15 +487,15 @@ const Services2 = (trigger) => {
 									ListFooterComponent={<View style={{ height: 0 }} />}
 									renderItem={({ item }) => (
 										<SafeAreaView >
-											<View style={{ width: windowWidth * 0.97, height: windowHeight * 0.07, backgroundColor: "white", borderBottomWidth: 0.7, borderRadius: 10, justifyContent: "center", marginBottom: 3 }}>
+											<View style={{ width: windowWidth * 0.97, height: windowHeight * 0.07, backgroundColor: "white", borderBottomWidth: 0.6, justifyContent: "center", marginBottom: 3 }}>
 												<Text style={{ fontSize: 20 }}> {item.streetAddress} </Text>
 
 											</View>
 										</SafeAreaView>
 									)}
 									renderHiddenItem={(item, rowMap) => (
-										<TouchableOpacity onPress={() => { fetchCartPrice(), deleteCartItem(item.item.id), rowMap[item.item.id].closeRow() }}>
-											<View style={{ backgroundColor: "red", height: windowHeight * 0.1, width: 90, borderRadius: 0, justifyContent: "center", alignItems: "center", marginLeft: 275 }}>
+										<TouchableOpacity onPress={() => { deleteRecentLocation(item.index), rowMap[item.item.id].closeRow() }}>
+											<View style={{ backgroundColor: "red", height: windowHeight * 0.07, width: 90, borderRadius: 0, position: "absolute", right: 0 }}>
 												{/* <View style={{ position: "absolute" }}> */}
 												<Text style={{ fontSize: 20, fontWeight: "500" }}>Delete</Text>
 												{/* </View> */}
@@ -516,7 +526,7 @@ const Services2 = (trigger) => {
 										borderRadius: 15,
 										marginTop: 7,
 										borderWidth: 0.3,
-										backgroundColor: "#d3d5db"
+										backgroundColor: "#E8E8E8"
 									},
 
 									listView: {
