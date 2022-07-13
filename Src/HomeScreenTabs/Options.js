@@ -27,8 +27,7 @@ const Services2 = ({ route }) => {
 	const [animateModal, setanimateModal] = useState(true);
 	const navigation = useNavigation();
 	const [priceIDArray, setPriceIDArray] = useState([route.params.priceID]);
-
-	// console.log(route.params.quotable)
+	// const [priceIDArray, setPriceIDArray] = useState();
 
 	useEffect(() => {
 		const fetchOptions = async () => {
@@ -67,14 +66,14 @@ const Services2 = ({ route }) => {
 										created: created
 									}]
 								});
-								counter = counter + 1
-								setCount(counter)
+								counter = counter + 1;
+								setCount(counter);
 
 								checkMarkList.push({
 									[name]: "transparent",
-								})
+								});
 
-								check.current = checkMarkList
+								check.current = checkMarkList;
 							}
 						});
 					});
@@ -151,16 +150,19 @@ const Services2 = ({ route }) => {
 	}
 
 	const mergePriceID = (itemName, priceID) => {
-		// console.log(check.current[itemName])
+
 		if (check.current[itemName] == "transparent") {
-			var index = priceIDArray.indexOf(priceID)
-			priceIDArray.splice(index, 1)
-			setPriceIDArray(...priceIDArray)
+			console.log(1)
+			var index = priceIDArray.indexOf(priceID);
+			priceIDArray.splice(index, 1);
 		}
+
 		else if (check.current[itemName] == "#0b84db") {
-			priceIDArray.push(priceID)
+			console.log(2)
+			setPriceIDArray(priceIDArray => [...priceIDArray, priceID]);
+			console.log(priceIDArray)
 		}
-		console.log(priceIDArray)
+		// setPriceIDArray(...priceIDArrayTemp);
 	}
 
 	const nextDays = [
