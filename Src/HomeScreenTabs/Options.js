@@ -27,8 +27,8 @@ const Services2 = ({ route }) => {
 	const [animateModal, setanimateModal] = useState(true);
 	const navigation = useNavigation();
 	const [priceIDArray, setPriceIDArray] = useState([route.params.priceID]);
-	// const [priceIDArray, setPriceIDArray] = useState();
 
+	console.log(priceIDArray)
 	useEffect(() => {
 		const fetchOptions = async () => {
 			try {
@@ -152,17 +152,13 @@ const Services2 = ({ route }) => {
 	const mergePriceID = (itemName, priceID) => {
 
 		if (check.current[itemName] == "transparent") {
-			console.log(1)
 			var index = priceIDArray.indexOf(priceID);
 			priceIDArray.splice(index, 1);
 		}
 
 		else if (check.current[itemName] == "#0b84db") {
-			console.log(2)
 			setPriceIDArray(priceIDArray => [...priceIDArray, priceID]);
-			console.log(priceIDArray)
 		}
-		// setPriceIDArray(...priceIDArrayTemp);
 	}
 
 	const nextDays = [
@@ -206,9 +202,9 @@ const Services2 = ({ route }) => {
 
 								<Calendar
 									onDayPress={day => {
-										navigation.navigate("Agenda", { date: day.dateString, userID: route.params.userID, cartItems: route.params.cartItems, companyName: route.params.companyName, cartOptions: cart, quotable: route.params.quotable, priceID: route.params.priceID, productID: route.params.productID, priceUnit: route.params.priceUnit })
+										navigation.navigate("Agenda", { date: day.dateString, userID: route.params.userID, cartItems: route.params.cartItems, companyName: route.params.companyName, cartOptions: cart, quotable: route.params.quotable, priceID: route.params.priceID, productID: route.params.productID, priceUnit: route.params.priceUnit, priceID: priceIDArray })
 										setModalVisible(false)
-										console.log(day)
+										console.log(priceIDArray)
 										// console.log(day.dateString)
 									}}
 									markedDates={

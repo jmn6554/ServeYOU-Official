@@ -17,6 +17,8 @@ const OrderQuotesReceiver = () => {
 	const [orderList, setOrderList] = useState("");
 	const [userDocReference, setUserDocReference] = useState("");
 	const isFocused = useIsFocused();
+	const height = Dimensions.get("screen").height;
+	const width = Dimensions.get("screen").width;
 
 	useEffect(() => {
 		fetchOrders();
@@ -67,7 +69,6 @@ const OrderQuotesReceiver = () => {
 					});
 				});
 			setOrderList(list);
-			console.log(orderList)
 		} catch (e) {
 			console.log(e);
 		}
@@ -91,7 +92,7 @@ const OrderQuotesReceiver = () => {
 			console.log(e);
 		}
 	};
-
+	console.log(quantity)
 
 	return (
 		<SafeAreaView style={styles.container} >
@@ -117,15 +118,15 @@ const OrderQuotesReceiver = () => {
 							<SafeAreaView >
 
 								<View style={styles.serviceHolder}>
-									<Text style={{ color: "black", fontSize: 18, fontWeight: "bold" }}>{item.serviceName.current.name} • ${item.serviceName.current.price}</Text>
-									<Text style={{ color: "black", fontSize: 16, fontWeight: "bold", marginStart: 10 }}> Options/Packages </Text>
+									<Text style={{ color: "black", fontSize: 18, fontWeight: "bold", position: "absolute", top: height * 0.015 }}>{item.serviceName.current.name} • ${item.serviceName.current.price}</Text>
+									<Text style={{ color: "black", fontSize: 16, fontWeight: "bold", marginStart: 10, position: "absolute", top: height * 0.05 }}> Options/Packages </Text>
 
-									<SafeAreaView style={{ flexDirection: "row", flexWrap: "wrap" }}>
+									<SafeAreaView style={{ flexDirection: "column", flexWrap: "wrap" }}>
 										{item.cartOptions.map(e => {
 											return (<Text style={{ fontSize: 15, marginStart: 14 }}>{e.name} • ${e.price}</Text>)
 										})}
 									</SafeAreaView>
-									<Text style={{ color: "black", fontSize: 15, marginLeft: "42%", marginTop: "3%" }}> Date: {item.selectedDay} at {Math.trunc(item.selectedTime)}:{((item.selectedTime % 1) * 60)} {Math.trunc(item.selectedTime) > 10 ? "PM" : "AM"}</Text>
+									<Text style={{ color: "black", fontSize: 15, position: "absolute", bottom: height * 0.005, left: width * 0.4 }}> Date: {item.selectedDay} at {Math.trunc(item.selectedTime)}:{((item.selectedTime % 1) * 60)} {Math.trunc(item.selectedTime) > 10 ? "PM" : "AM"}</Text>
 
 									{item.quotable == "quotable" && item.quoted == undefined ?
 										<View style={styles.quote}>
@@ -232,7 +233,7 @@ const styles = StyleSheet.create({
 
 	serviceHolder: {
 		width: Dimensions.get("screen").width,
-		height: Dimensions.get("screen").height * 0.12,
+		height: Dimensions.get("screen").height * 0.20,
 		marginBottom: 3,
 		backgroundColor: "#ffffff",
 		alignContent: "flex-start",

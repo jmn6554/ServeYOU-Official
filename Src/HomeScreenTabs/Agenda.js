@@ -28,6 +28,7 @@ const Agendas = ({ route }) => {
 	const navigation = useNavigation();
 	const [customerID, setCustomerID] = useState("");
 
+	console.log(route.params.priceID)
 
 	useEffect(() => {
 		scheduler()
@@ -60,7 +61,7 @@ const Agendas = ({ route }) => {
 
 	const addToCart = async () => {
 		if (route.params)
-		var cartCounter = 0;
+			var cartCounter = 0;
 		const db = firebase.firestore();
 		const user = auth.currentUser.uid;
 		await db.collection("Cart").add({
@@ -141,7 +142,7 @@ const Agendas = ({ route }) => {
 	}, [])
 
 	const addToOrders = async () => {
-		var cartCounter = 0;	
+		var cartCounter = 0;
 		const db = firebase.firestore();
 		const user = auth.currentUser.uid;
 		await db.collection("Orders").add({
@@ -150,6 +151,7 @@ const Agendas = ({ route }) => {
 			companyName: route.params.companyName,
 			serviceName: route.params.cartItems,
 			productID: route.params.productID,
+			// priceID: route.params.priceID,
 			priceID: route.params.priceID,
 			priceUnit: route.params.priceUnit,
 			customerID: customerID,
@@ -191,11 +193,11 @@ const Agendas = ({ route }) => {
 							})}
 						</View>
 						<View style={{ position: "absolute", top: "70%" }}>
-							
+
 							<Availabilities1 text={"Buy Now" + " • " + "$" + priceSum}></Availabilities1>
 							{route.params.quotable != "quotable" ?
-							<Availabilities1 onPress={() => { addToCart(), setModalVisible(false), navigation.navigate("HomeReceiver") }} text="Add to Cart"></Availabilities1> : <Availabilities1 onPress={() => { addToOrders(), setModalVisible(false), navigation.navigate("HomeReceiver") }} text="Request Quote"></Availabilities1>
-				}
+								<Availabilities1 onPress={() => { addToCart(), setModalVisible(false), navigation.navigate("HomeReceiver") }} text="Add to Cart"></Availabilities1> : <Availabilities1 onPress={() => { addToOrders(), setModalVisible(false), navigation.navigate("HomeReceiver") }} text="Request Quote"></Availabilities1>
+							}
 						</View>
 
 					</View>
