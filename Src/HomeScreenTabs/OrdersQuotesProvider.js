@@ -42,13 +42,12 @@ const OrdersQuotesProvider = () => {
 	const [docID, setDocID] = useState("");
 	const [userID, setUserID] = useState("");
 	const [count, setCount] = useState("");
-	const [index, setIndex] = useState();
+	const [index1, setIndex] = useState("");
 	const [quantityInput, setQuantityInput] = useState("");
-	const [priceIDArray, setPriceIDArray] = useState("");
+	const [priceIDArray, setPriceIDArray] = useState([]);
 	var tempCount = 0;
 
 	useEffect(async () => {
-		setIndex(0);
 		await fetchOrders();
 	}, [])
 
@@ -91,21 +90,20 @@ const OrdersQuotesProvider = () => {
 			let tempList = [];
 			let tempPriceIDCount = 0;
 
-			orderList.forEach(e => {
-				console.log(e.cartOptions.length + 1)
+			orderList.forEach((e, index) => {
 				while (tempPriceIDCount < e.cartOptions.length + 1) {
 					if (tempPriceIDCount == 0) {
-						tempList.push({ priceID: e.priceID[tempPriceIDCount], quantity: "", name: e.serviceName.current.name })
+						tempList.push({ price: e.priceID[tempPriceIDCount], quantity: "", name: e.serviceName.current.name, index: index })
 					}
 					else if (tempPriceIDCount > 0) {
-						console.log(1)
-						tempList.push({ priceID: e.priceID[tempPriceIDCount], quantity: "", name: e.cartOptions[tempPriceIDCount - 1].name })
+						tempList.push({ price: e.priceID[tempPriceIDCount], quantity: "", name: e.cartOptions[tempPriceIDCount - 1].name, index: index })
 					}
 					tempPriceIDCount += 1;
 				}
 				tempPriceIDCount = 0;
 			})
 			setPriceIDArray(tempList)
+			// console.log(orderList)
 
 		} catch (e) {
 			console.log(e);
@@ -114,39 +112,46 @@ const OrdersQuotesProvider = () => {
 	};
 
 	const quoteCustomer = async (quantity) => {
-		const functions = getFunctions()
-		const data = { quantity: quantity, customerID: customerID, priceID: priceID }
-		const response = await httpsCallable(functions, 'quoteCreation')(data).then(function (result) {
-			const quote = result.data.quote;
-			const db = firebase.firestore();
-			db
-				.collection('Orders')
-				.doc(docID)
-				.update({ quoteID: result.data.quote.id, quoted: "true", quoteFinalized: "false", quantity: quantity })
+		var priceIDArrayTemp = []
+		priceIDArray.forEach(e => {
+			if (e.index == index) {
+				priceIDArrayTemp.push({ price: e.price, quantity: e.quantity });
+			}
+		})
+		console.log(priceIDArrayTemp)
+		// const functions = getFunctions()
+		// const data = { priceIDArray: priceIDArray, customerID: customerID }
+		// const response = await httpsCallable(functions, 'quoteCreation')(data).then(function (result) {
+		// 	const quote = result.data.quote;
+		// 	const db = firebase.firestore();
+		// 	db
+		// 		.collection('Orders')
+		// 		.doc(docID)
+		// 		.update({ quoteID: result.data.quote.id, quoted: "true", quoteFinalized: "false", quantity: quantity })
 
-			db
-				.collection('Users')
-				.where('userID', '==', userID)
-				.get()
-				.then((querySnapshot) => {
-					querySnapshot.forEach((doc) => {
-						updateUserQuoteField(doc.id)
-					});
-				});
+		// 	db
+		// 		.collection('Users')
+		// 		.where('userID', '==', userID)
+		// 		.get()
+		// 		.then((querySnapshot) => {
+		// 			querySnapshot.forEach((doc) => {
+		// 				updateUserQuoteField(doc.id)
+		// 			});
+		// 		});
 
-			return {
-				quote: quote
-			};
-		}).catch(console.log)
+		// 	return {
+		// 		quote: quote
+		// 	};
+		// }).catch(console.log)
 
-		const updateUserQuoteField = async (quotedUserDocReference) => {
-			const db = firebase.firestore();
-			await db
-				.collection('Users')
-				.doc(quotedUserDocReference)
-				.update({ newQuote: "true" })
-		}
-		return response
+		// const updateUserQuoteField = async (quotedUserDocReference) => {
+		// 	const db = firebase.firestore();
+		// 	await db
+		// 		.collection('Users')
+		// 		.doc(quotedUserDocReference)
+		// 		.update({ newQuote: "true" })
+		// }
+		// return response
 
 	};
 
@@ -188,11 +193,11 @@ const OrdersQuotesProvider = () => {
 
 	const inputHandler = (priceID, text) => {
 		// priceIDArray[priceIDArray.findIndex(e => e.priceID == quantityInput)].quantity = text;
-		priceIDArray[priceIDArray.findIndex(e => e.priceID == quantityInput)].quantity = text;
-		console.log(priceIDArray[priceIDArray.findIndex(e => e.priceID == quantityInput)].quantity);
+		priceIDArray[priceIDArray.findIndex(e => e.price == quantityInput)].quantity = text;
+		// console.log(priceIDArray[priceIDArray.findIndex(e => e.price == quantityInput)].quantity);
 	}
 
-	console.log(priceIDArray)
+	// console.log(priceIDArray)
 
 	return (
 		<SafeAreaView style={styles.container} >
@@ -201,7 +206,7 @@ const OrdersQuotesProvider = () => {
 			</View>
 
 			<SafeAreaView style={styles.container2}>
-
+				{/* {typeof orderList[0].priceID != undefined ? */}
 				<FlatList
 					data={orderList}
 					keyExtractor={(item) => item.id}
@@ -225,7 +230,7 @@ const OrdersQuotesProvider = () => {
 									<Text style={{ color: "black", fontSize: 15, marginLeft: "42%", marginTop: "3%" }}> Date: {item.selectedDay} at {Math.trunc(item.selectedTime)}:{((item.selectedTime % 1) * 60)}{item.selectedTime % 1 == 0 ? "0" : null} {Math.trunc(item.selectedTime) > 10 ? "PM" : "AM"}</Text>
 
 									{item.quotable == "quotable" && item.quoteID == undefined ?
-										<TouchableOpacity style={styles.quote} onPress={() => { setModalVisible(true), console.log(item.docID), setCustomerID(item.customerID), setPriceID(item.priceID), setDocID(item.docID), setUserID(item.user), fetchOrders(), setIndex(index), console.log(index) }}>
+										<TouchableOpacity style={styles.quote} onPress={() => { setIndex(item.index), setCustomerID(item.customerID), setPriceID(item.priceID), setDocID(item.docID), setUserID(item.user), fetchOrders(), setModalVisible(true) }}>
 											<Text style={{ fontSize: 15, color: "white" }}>Create Quote</Text>
 										</TouchableOpacity> : null}
 
@@ -241,73 +246,83 @@ const OrdersQuotesProvider = () => {
 
 								</View>
 
-								<SafeAreaView >
 
-									<SwipeUpDownModal
-										modalVisible={modalVisible}
-										PressToanimate={animateModal}
-										//if you don't pass HeaderContent you should pass marginTop in view of ContentModel to Make modal swipeable
-										ContentModal={
-											<Pressable onPress={() => Keyboard.dismiss()}>
-												<View style={styles.modalView}>
-													<View style={styles.container3}>
-														<Text style={{ fontSize: 30, fontWeight: "bold", color: "black", marginBottom: 40, }}>Quote Customer</Text>
-
-														<KeyboardAvoidingView behavior="height" style={{ flex: 1 }} >
-
-															<View style={{ flexDirection: "column", flexWrap: "wrap" }}>
-																{item.priceID.map((e, index) => {
-																	return (
-																		<View style={styles.inputContainer}>
-																			{/* <Text>{priceIDArray[index].name}</Text> */}
-																			<TextInput
-																				placeholderTextColor="black"
-																				value={priceIDArray[priceIDArray.indexOf(e)]}
-																				onChangeText={(text) => { inputHandler(e, text) }}
-																				onPressIn={() => { setQuantityInput(e) }}
-																				placeholder={priceIDArray[index].name + " quantity"}
-																				style={styles.input}
-																				secureTextEntry={false}
-																				keyboardType="numeric"
-																			/>
-																		</View>)
-																})}
-															</View>
-
-															<ModalButtons
-																text="Send Quote"
-																onPress={() => { setModalVisible(false), quoteCustomer(quantity) }}
-															/>
-															<ModalButtons
-																text="Cancel"
-																onPress={() => setModalVisible(false)}
-															/>
-														</KeyboardAvoidingView>
-
-													</View>
-												</View>
-											</Pressable>
-										}
-										HeaderStyle={styles.headerContent}
-										ContentModalStyle={styles.Modal}
-										HeaderContent={
-											<View style={styles.containerHeader}>
-
-											</View>
-										}
-										onClose={() => {
-											setModalVisible(false);
-											setanimateModal(false);
-										}}
-									/>
-
-								</SafeAreaView>
 							</SafeAreaView>
+
+							<SafeAreaView >
+
+								<SwipeUpDownModal
+									modalVisible={modalVisible}
+									PressToanimate={animateModal}
+									//if you don't pass HeaderContent you should pass marginTop in view of ContentModel to Make modal swipeable
+									ContentModal={
+										<Pressable onPress={() => Keyboard.dismiss()}>
+											<View style={styles.modalView}>
+												<View style={styles.container3}>
+													<Text style={{ fontSize: 30, fontWeight: "bold", color: "black", marginBottom: 40, }}>Quote Customer</Text>
+													<Text style={{ fontSize: 30, fontWeight: "bold", color: "black", marginBottom: 40, }}>{item.docID}</Text>
+
+													<KeyboardAvoidingView behavior="height" style={{ flex: 1 }} >
+
+														<View style={{ flexDirection: "column", flexWrap: "wrap" }}>
+															{item.priceID.map((e, index) => {
+																console.log(index)
+																return (
+																	<View style={styles.inputContainer}>
+																		{/* <Text>{priceIDArray[index].name}</Text> */}
+																		<TextInput
+																			placeholderTextColor="black"
+																			value={priceIDArray[priceIDArray.indexOf(e)]}
+																			onChangeText={(text) => { inputHandler(e, text) }}
+																			onPressIn={() => { setQuantityInput(e) }}
+																			// placeholder={priceIDArray[index].name + " quantity"}
+																			style={styles.input}
+																			secureTextEntry={false}
+																			keyboardType="numeric"
+																		/>
+																	</View>
+																)
+															})}
+														</View>
+
+														<ModalButtons
+															text="Send Quote"
+															onPress={() => { setModalVisible(false), quoteCustomer(quantity) }}
+														/>
+														<ModalButtons
+															text="Cancel"
+															onPress={() => setModalVisible(false)}
+														/>
+													</KeyboardAvoidingView>
+
+												</View>
+											</View>
+										</Pressable>
+									}
+									HeaderStyle={styles.headerContent}
+									ContentModalStyle={styles.Modal}
+									HeaderContent={
+										<View style={styles.containerHeader}>
+
+										</View>
+									}
+									onClose={() => {
+										setModalVisible(false);
+										setanimateModal(false);
+									}}
+								/>
+
+							</SafeAreaView>
+
+
 
 						</SafeAreaView>
 
+
+
 					)}
 				/>
+				{/* : null} */}
 
 			</SafeAreaView>
 

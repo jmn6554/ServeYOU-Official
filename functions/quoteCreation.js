@@ -6,12 +6,7 @@ exports.quoteCreation = functions.https.onCall(
     async (data) => {
       const quote = await stripe.quotes.create({
         customer: data.customerID,
-        line_items: [
-          {
-            price: data.priceID,
-            quantity: data.quantity,
-          },
-        ],
+        line_items: data.priceIDArray,
       });
 
       return ({

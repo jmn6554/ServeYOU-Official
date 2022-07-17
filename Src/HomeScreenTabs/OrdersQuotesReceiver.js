@@ -92,7 +92,6 @@ const OrderQuotesReceiver = () => {
 			console.log(e);
 		}
 	};
-	console.log(quantity)
 
 	return (
 		<SafeAreaView style={styles.container} >
