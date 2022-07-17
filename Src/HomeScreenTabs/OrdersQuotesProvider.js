@@ -89,11 +89,14 @@ const OrdersQuotesProvider = () => {
 			setOrderList(list);
 
 			let tempList = [];
+			// let tempPriceIDCount = 0;
 
 			orderList.forEach(e => {
-				e.priceID.forEach(f => tempList.push({ priceID: f, quantity: "" }))
+				// if (tempPriceIDCount == 0){
+				e.priceID.forEach(subElement => tempList.push({ priceID: subElement, quantity: "" }))
+				// }
+				// tempPriceIDCount += 1;
 			})
-
 			setPriceIDArray(tempList)
 
 		} catch (e) {
@@ -246,17 +249,22 @@ const OrdersQuotesProvider = () => {
 
 															<View style={{ flexDirection: "column", flexWrap: "wrap" }}>
 																{item.priceID.map((e, index) => {
-																	return (<View style={styles.inputContainer}>{
-																		<TextInput
-																			placeholderTextColor="black"
-																			value={priceIDArray[priceIDArray.indexOf(e)]}
-																			onChangeText={(text) => { inputHandler(e, text) }}
-																			onPressIn={() => { setQuantityInput(e) }}
-																			placeholder="Quantity"
-																			style={styles.input}
-																			secureTextEntry={false}
-																			keyboardType="numeric"
-																		/>}</View>)
+																	return (
+																		<View style={styles.inputContainer}>
+																			{item.serviceName.current.name != null ?
+																				<Text>{item.serviceName.current.name}</Text> : <Text>hey</Text>
+																			}
+																			<TextInput
+																				placeholderTextColor="black"
+																				value={priceIDArray[priceIDArray.indexOf(e)]}
+																				onChangeText={(text) => { inputHandler(e, text) }}
+																				onPressIn={() => { setQuantityInput(e) }}
+																				placeholder="Quantity"
+																				style={styles.input}
+																				secureTextEntry={false}
+																				keyboardType="numeric"
+																			/>
+																		</View>)
 																})}
 															</View>
 
