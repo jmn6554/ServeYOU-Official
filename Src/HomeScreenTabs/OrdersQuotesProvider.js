@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { View, Text, SafeAreaView, StyleSheet, Alert, FlatList, Modal, Image, KeyboardAvoidingView, TouchableOpacity, Pressable, Keyboard, Dimensions, TextInput } from "react-native";
+import { View, Text, SafeAreaView, StyleSheet, Alert, FlatList, Modal, Image, KeyboardAvoidingView, TouchableOpacity, Pressable, Keyboard, Dimensions, TextInput, TextComponent } from "react-native";
 import { SpeedDial, Overlay } from 'react-native-elements';
 import GestureRecognizer from 'react-native-swipe-gestures';
 import CustomInput from "../Components/CustomInput";
@@ -89,13 +89,21 @@ const OrdersQuotesProvider = () => {
 			setOrderList(list);
 
 			let tempList = [];
-			// let tempPriceIDCount = 0;
+			let tempPriceIDCount = 0;
 
 			orderList.forEach(e => {
-				// if (tempPriceIDCount == 0){
-				e.priceID.forEach(subElement => tempList.push({ priceID: subElement, quantity: "" }))
-				// }
-				// tempPriceIDCount += 1;
+				console.log(e.cartOptions.length + 1)
+				while (tempPriceIDCount < e.cartOptions.length + 1) {
+					if (tempPriceIDCount == 0) {
+						tempList.push({ priceID: e.priceID[tempPriceIDCount], quantity: "", name: e.serviceName.current.name })
+					}
+					else if (tempPriceIDCount > 0) {
+						console.log(1)
+						tempList.push({ priceID: e.priceID[tempPriceIDCount], quantity: "", name: e.cartOptions[tempPriceIDCount - 1].name })
+					}
+					tempPriceIDCount += 1;
+				}
+				tempPriceIDCount = 0;
 			})
 			setPriceIDArray(tempList)
 
@@ -251,15 +259,13 @@ const OrdersQuotesProvider = () => {
 																{item.priceID.map((e, index) => {
 																	return (
 																		<View style={styles.inputContainer}>
-																			{item.serviceName.current.name != null ?
-																				<Text>{item.serviceName.current.name}</Text> : <Text>hey</Text>
-																			}
+																			{/* <Text>{priceIDArray[index].name}</Text> */}
 																			<TextInput
 																				placeholderTextColor="black"
 																				value={priceIDArray[priceIDArray.indexOf(e)]}
 																				onChangeText={(text) => { inputHandler(e, text) }}
 																				onPressIn={() => { setQuantityInput(e) }}
-																				placeholder="Quantity"
+																				placeholder={priceIDArray[index].name + " quantity"}
 																				style={styles.input}
 																				secureTextEntry={false}
 																				keyboardType="numeric"
@@ -513,8 +519,8 @@ const styles = StyleSheet.create({
 
 	inputContainer: {
 		backgroundColor: "white",
-		width: Dimensions.get("screen").width * 0.45,
-		height: Dimensions.get("screen").height * 0.06,
+		width: Dimensions.get("screen").width * 0.5,
+		height: Dimensions.get("screen").height * 0.07,
 		borderColor: "black",
 		borderRadius: 10,
 		borderWidth: 0.35,
@@ -523,7 +529,7 @@ const styles = StyleSheet.create({
 		marginBottom: 5,
 		justifyContent: "center",
 	},
-	input: { borderColor: "#2c4391", },
+	input: { borderColor: "#2c4391" },
 
 
 
