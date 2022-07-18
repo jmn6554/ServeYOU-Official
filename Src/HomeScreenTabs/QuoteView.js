@@ -17,13 +17,13 @@ import moment from "moment";
 import LottieView from 'lottie-react-native';
 
 
-const QuoteView = ({route}) => {
+const QuoteView = ({ route }) => {
 	const [orderList, setOrderList] = useState("");
 	const [userDocReference, setUserDocReference] = useState("");
 	const [quoteObject, setQuoteObject] = useState("");
 	const [loading, setLoading] = useState(true);
-	const height =  Dimensions.get("screen").height
-	const width =  Dimensions.get("screen").width
+	const height = Dimensions.get("screen").height
+	const width = Dimensions.get("screen").width
 
 	useEffect(() => {
 		fetchQuote();
@@ -41,8 +41,8 @@ const QuoteView = ({route}) => {
 				.get()
 				.then((querySnapshot) => {
 					querySnapshot.forEach((doc) => {
-					
-						
+
+
 					});
 				});
 			setOrderList(list);
@@ -82,7 +82,7 @@ const QuoteView = ({route}) => {
 		}).catch(console.log)
 		setLoading(false)
 		return response
-		
+
 	};
 
 
@@ -93,35 +93,39 @@ const QuoteView = ({route}) => {
 			</View>
 
 			{loading == true ? null :
-			<View>
-			<View style={{borderTopWidth: 1, position:"absolute", top: height * 0.12, width: width * 1}}>
-			</View>
-			<Text style={{ color: "black", fontSize: 25, fontWeight: "bold", top: height * 0.13, }}>{route.params.companyName}</Text>
-			<Text style={{ color: "black", fontSize: 13, position:"absolute", top: height * 0.18, right: width * 0.05, fontWeight: "bold" }}>Quote Number {quoteObject.number}</Text>
-			<Text style={{ color: "black", fontSize: 14, position:"absolute", top: height * 0.23, left: width * 0.03, fontWeight: "bold" }}>Quote For</Text>
-			<Text style={{ color: "black", fontSize: 13, position:"absolute", top: height * 0.25, left: width * 0.03, fontWeight: "400" }}>{auth.currentUser.email}</Text>
-			<Text style={{ color: "black", fontSize: 15, position:"absolute", top: height * 0.20, right: width * 0.05, fontWeight: "500" }}>Issued: {moment.unix(quoteObject.status_transitions.finalized_at).format("DD MMM, yyyy")}</Text>
-			<View style={{borderTopWidth: 1, position:"absolute", top: height * 0.28, width: width * 1}}>
-			</View>
-			<Text style={{ color: "black", fontSize: 21, position:"absolute", top: height * 0.3, fontWeight: "bold" }}>Description</Text>
-			<Text style={{ color: "black", fontSize: 15, position:"absolute", top: height * 0.05, right: width * 0.05, fontWeight: "500" }}>Valid until: {moment.unix(quoteObject.expires_at).format("DD MMM, yyyy")}</Text>
-			<Text style={{ color: "black", fontSize: 21, position:"absolute", top: height * 0.3, right: width * 0.5, fontWeight: "bold" }}>QTY</Text>
-			<Text style={{ color: "black", fontSize: 21, position:"absolute", top: height * 0.3, right: width * 0.05, fontWeight: "bold" }}>Amount</Text>
-			<Text style={{ color: "black", fontSize: 21, position:"absolute", top: height * 0.35, right: width * 0.5, fontWeight: "bold" }}>{route.params.quantity}</Text>
-			<Text style={{ color: "black", fontSize: 22, position:"absolute", top: height * 0.35, fontWeight: "400" }}>{route.params.serviceName.current.name}</Text>
-			<Text style={{ color: "black", fontSize: 18, position:"absolute", top: height * 0.08, right: width * 0.05, fontWeight: "bold" }}>${quoteObject.amount_total/100}</Text>
-			<Text style={{ color: "black", fontSize: 22, position:"absolute", top: height * 0.35, right: width * 0.05, fontWeight: "400" }}>${quoteObject.amount_total/100}</Text>
-			<View style={{borderTopWidth: 1, position:"absolute", top: height * 0.73, width: width * 1}}>
-			</View>
-			<Text style={{ color: "black", fontSize: 22, position:"absolute", top: height * 0.75, right: width * 0.05, fontWeight: "400" }}>Quote Total: ${quoteObject.amount_total/100}</Text>
+				<View>
+					<View style={{ borderTopWidth: 1, position: "absolute", top: height * 0.12, width: width * 1 }}>
+					</View>
+					<Text style={{ color: "black", fontSize: 25, fontWeight: "bold", top: height * 0.13, }}>{route.params.companyName}</Text>
+					{quoteObject.number != null ?
+						<Text style={{ color: "black", fontSize: 13, position: "absolute", top: height * 0.18, right: width * 0.05, fontWeight: "bold" }}>Quote Number {quoteObject.number}</Text> : null
+					}
+					<Text style={{ color: "black", fontSize: 14, position: "absolute", top: height * 0.23, left: width * 0.03, fontWeight: "bold" }}>Quote For</Text>
+					<Text style={{ color: "black", fontSize: 13, position: "absolute", top: height * 0.25, left: width * 0.03, fontWeight: "400" }}>{auth.currentUser.email}</Text>
+					{quoteObject.status_transitions.finalized_at != null ?
+						<Text style={{ color: "black", fontSize: 15, position: "absolute", top: height * 0.20, right: width * 0.05, fontWeight: "500" }}>Issued: {moment.unix(quoteObject.status_transitions.finalized_at).format("DD MMM, yyyy")}</Text> : null
+					}
+					<View style={{ borderTopWidth: 1, position: "absolute", top: height * 0.28, width: width * 1 }}>
+					</View>
+					<Text style={{ color: "black", fontSize: 21, position: "absolute", top: height * 0.3, fontWeight: "bold" }}>Description</Text>
+					<Text style={{ color: "black", fontSize: 15, position: "absolute", top: height * 0.05, right: width * 0.05, fontWeight: "500" }}>Valid until: {moment.unix(quoteObject.expires_at).format("DD MMM, yyyy")}</Text>
+					<Text style={{ color: "black", fontSize: 21, position: "absolute", top: height * 0.3, right: width * 0.45, fontWeight: "bold" }}>QTY</Text>
+					<Text style={{ color: "black", fontSize: 21, position: "absolute", top: height * 0.3, right: width * 0.05, fontWeight: "bold" }}>Amount</Text>
+					{route.params.priceIDArray.map(e => { return (<Text style={{ color: "black", fontSize: 17, position: "relative", top: height * 0.32, marginBottom: 20, fontWeight: "bold", flexDirection: "column" }}>{e.name}</Text>) })}
+					{route.params.quantity.map(e => { return (<Text style={{ color: "black", fontSize: 17, position: "relative", top: height * 0.22, left: width * 0.5, marginBottom: 20, fontWeight: "bold", flexDirection: "column" }}>{e.quantity}</Text>) })}
+					<Text style={{ color: "black", fontSize: 18, position: "absolute", top: height * 0.08, right: width * 0.05, fontWeight: "bold" }}>${quoteObject.amount_total / 100}</Text>
+					{/* <Text style={{ color: "black", fontSize: 22, position: "absolute", top: height * 0.35, right: width * 0.05, fontWeight: "400" }}>${quoteObject.amount_total / 100}</Text> */}
+					<View style={{ borderTopWidth: 1, position: "absolute", top: height * 0.73, width: width * 1 }}>
+					</View>
+					<Text style={{ color: "black", fontSize: 22, position: "absolute", top: height * 0.75, right: width * 0.05, fontWeight: "400" }}>Quote Total: ${quoteObject.amount_total / 100}</Text>
 
-			</View>
-}
+				</View>
+			}
 			{loading == true ? <LottieView source={require("../../assets/50738-loading-line.json")} autoPlay loop ref={ref} /> : null}
 
 
 		</SafeAreaView >
-	);n
+	); n
 };
 
 const styles = StyleSheet.create({

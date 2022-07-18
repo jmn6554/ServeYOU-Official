@@ -114,45 +114,52 @@ const OrdersQuotesProvider = () => {
 
 	const quoteCustomer = async (quantity) => {
 		var priceIDArrayTemp = []
+		var quantityArrayTemp = []
 		priceIDArray.forEach(e => {
-			if (e.index == index) {
+			if (e.index == index1) {
 				priceIDArrayTemp.push({ price: e.price, quantity: e.quantity });
 			}
 		})
-		console.log(priceIDArrayTemp)
-		// const functions = getFunctions()
-		// const data = { priceIDArray: priceIDArray, customerID: customerID }
-		// const response = await httpsCallable(functions, 'quoteCreation')(data).then(function (result) {
-		// 	const quote = result.data.quote;
-		// 	const db = firebase.firestore();
-		// 	db
-		// 		.collection('Orders')
-		// 		.doc(docID)
-		// 		.update({ quoteID: result.data.quote.id, quoted: "true", quoteFinalized: "false", quantity: quantity })
+		priceIDArray.forEach(e => {
+			if (e.index == index1) {
+				quantityArrayTemp.push({ price: e.price, quantity: e.quantity, name: e.name });
+			}
+		})
+		console.log(priceIDArrayTemp);
 
-		// 	db
-		// 		.collection('Users')
-		// 		.where('userID', '==', userID)
-		// 		.get()
-		// 		.then((querySnapshot) => {
-		// 			querySnapshot.forEach((doc) => {
-		// 				updateUserQuoteField(doc.id)
-		// 			});
-		// 		});
+		const functions = getFunctions()
+		const data = { priceIDArray: priceIDArrayTemp, customerID: customerID }
+		const response = await httpsCallable(functions, 'quoteCreation')(data).then(function (result) {
+			const quote = result.data.quote;
+			const db = firebase.firestore();
+			db
+				.collection('Orders')
+				.doc(docID)
+				.update({ quoteID: result.data.quote.id, quoted: "true", quoteFinalized: "false", quantity: quantityArrayTemp })
 
-		// 	return {
-		// 		quote: quote
-		// 	};
-		// }).catch(console.log)
+			db
+				.collection('Users')
+				.where('userID', '==', userID)
+				.get()
+				.then((querySnapshot) => {
+					querySnapshot.forEach((doc) => {
+						updateUserQuoteField(doc.id)
+					});
+				});
 
-		// const updateUserQuoteField = async (quotedUserDocReference) => {
-		// 	const db = firebase.firestore();
-		// 	await db
-		// 		.collection('Users')
-		// 		.doc(quotedUserDocReference)
-		// 		.update({ newQuote: "true" })
-		// }
-		// return response
+			return {
+				quote: quote
+			};
+		}).catch(console.log)
+
+		const updateUserQuoteField = async (quotedUserDocReference) => {
+			const db = firebase.firestore();
+			await db
+				.collection('Users')
+				.doc(quotedUserDocReference)
+				.update({ newQuote: "true" })
+		}
+		return response
 
 	};
 
@@ -194,7 +201,7 @@ const OrdersQuotesProvider = () => {
 
 	const inputHandler = (priceID, text) => {
 		// priceIDArray[priceIDArray.findIndex(e => e.priceID == quantityInput)].quantity = text;
-		priceIDArray[priceIDArray.findIndex(e => e.price == quantityInput)].quantity = text;
+		priceIDArray[priceIDArray.findIndex(e => e.price == quantityInput && e.docID == docID)].quantity = text;
 		// console.log(priceIDArray[priceIDArray.findIndex(e => e.price == quantityInput)].quantity);
 	}
 
@@ -277,9 +284,9 @@ const OrdersQuotesProvider = () => {
 														<View style={styles.inputContainer}>
 															<TextInput
 																placeholderTextColor="black"
-																value={priceIDArray[priceIDArray.indexOf(e)]}
-																onChangeText={(text) => { inputHandler(e, text) }}
-																onPressIn={() => { setQuantityInput(e) }}
+																value={priceIDArray[priceIDArray.indexOf(e.price)]}
+																onChangeText={(text) => { inputHandler(e.price, text) }}
+																onPressIn={() => { setQuantityInput(e.price) }}
 																placeholder={e.name}
 																// placeholder={e}
 																style={styles.input}

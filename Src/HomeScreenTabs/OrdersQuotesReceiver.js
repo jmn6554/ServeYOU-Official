@@ -133,12 +133,12 @@ const OrderQuotesReceiver = () => {
 										</View> : null}
 
 									{item.quotable == "quotable" && item.quoted == "true" && item.quoteFinalized == "false" ?
-										<TouchableOpacity style={styles.quoteReady} onPress={() => navigation.navigate("QuoteView", { quoteID: item.quoteID, companyName: item.companyName, serviceName: item.serviceName, quantity: item.quantity })}>
+										<TouchableOpacity style={styles.quoteReady} onPress={() => navigation.navigate("QuoteView", { quoteID: item.quoteID, companyName: item.companyName, serviceName: item.serviceName, priceIDArray: item.priceIDArray, quantity: item.quantity })}>
 											<Text style={{ fontSize: 15, color: "white" }}>Quote Draft</Text>
 										</TouchableOpacity> : null}
 
 									{item.quotable == "quotable" && item.quoteFinalized == "true" ?
-										<TouchableOpacity style={styles.quoteReady} onPress={() => navigation.navigate("QuoteView", { quoteID: item.quoteID, companyName: item.companyName, serviceName: item.serviceName, quantity: item.quantity })}>
+										<TouchableOpacity style={styles.quoteReady} onPress={() => navigation.navigate("QuoteView", { quoteID: item.quoteID, companyName: item.companyName, serviceName: item.serviceName, priceIDArray: item.PriceIDArray, quantity: item.quantity })}>
 											<Text style={{ fontSize: 15, color: "white" }}>Quote Finalized</Text>
 										</TouchableOpacity> : null}
 

@@ -90,7 +90,7 @@ const SignInScreen = () => {
 			.then((userCredentials) => {
 				const user = userCredentials.user;
 				if (user && user.emailVerified) {
-					navigation.navigate("HomeProvider")
+					navigation.navigate("HomeReceiver")
 				}
 				else if (user && user.emailVerified === false) {
 					alert("Please verify your email!")
