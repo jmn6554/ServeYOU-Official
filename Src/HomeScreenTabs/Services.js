@@ -247,16 +247,16 @@ const Services2 = () => {
 							image,
 							created,
 						} = doc.data();
-							list.push({
-								id: doc.id,
-								name: name,
-								description: description,
-								price: price,
-								priceUnit: priceUnit,
-								priceID: priceID,
-								image: image,
-								created: created
-							});
+						list.push({
+							id: doc.id,
+							name: name,
+							description: description,
+							price: price,
+							priceUnit: priceUnit,
+							priceID: priceID,
+							image: image,
+							created: created
+						});
 					});
 				});
 			setServiceList(list);
