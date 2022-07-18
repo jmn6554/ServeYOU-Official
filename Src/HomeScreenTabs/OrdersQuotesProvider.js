@@ -32,14 +32,13 @@ import { enableNetworkProviderAsync } from "expo-location";
 
 const OrdersQuotesProvider = () => {
 	const [quantity, setQuantity] = useState();
-	const [orderList, setOrderList] = useState([{ priceID: [1, 2], cartOptions: [1, 2], serviceName: { current: { name: "" } } }]);
+	const [orderList, setOrderList] = useState([{ priceIDArray: [1, 2], cartOptions: [1, 2], serviceName: { current: { name: "" } } }]);
 	const [modalVisible, setModalVisible] = useState(false);
 	const [modalVisible2, setModalVisible2] = useState(false);
 	const [animateModal, setanimateModal] = useState(true);
 	const navigation = useNavigation();
 	const [reload, setReload] = useState(0);
 	const [customerID, setCustomerID] = useState("");
-	const [priceID, setPriceID] = useState("");
 	const [docID, setDocID] = useState("");
 	const [userID, setUserID] = useState("");
 	const [count, setCount] = useState("");
@@ -71,7 +70,7 @@ const OrdersQuotesProvider = () => {
 							serviceName: doc.data().serviceName,
 							customerID: doc.data().customerID,
 							productID: doc.data().productID,
-							priceID: doc.data().priceID,
+							priceIDArray: doc.data().priceIDArray,
 							cartOptions: doc.data().cartOptions,
 							selectedTime: doc.data().selectedTime,
 							selectedDay: doc.data().selectedDay,
@@ -87,20 +86,19 @@ const OrdersQuotesProvider = () => {
 					let tempPriceIDCount = 0;
 
 					list.forEach((e, index) => {
-						console.log(e.priceID);
+						console.log(e.priceIDArray);
 						while (tempPriceIDCount < e.cartOptions.length + 1) {
 							if (tempPriceIDCount == 0) {
-								tempList.push({ price: e.priceID[tempPriceIDCount], quantity: "", name: e.serviceName.current.name, docID: e.docID, index: index })
+								tempList.push({ price: e.priceIDArray[tempPriceIDCount].price, quantity: "", name: e.priceIDArray[tempPriceIDCount].name, docID: e.docID, index: index })
 							}
 							else if (tempPriceIDCount > 0) {
-								tempList.push({ price: e.priceID[tempPriceIDCount], quantity: "", name: e.cartOptions[tempPriceIDCount - 1].name, docID: e.docID, index: index })
+								tempList.push({ price: e.priceIDArray[tempPriceIDCount].price, quantity: "", name: e.priceIDArray[tempPriceIDCount].name, docID: e.docID, index: index })
 							}
 							tempPriceIDCount += 1;
 						}
 						tempPriceIDCount = 0;
 					})
 					setPriceIDArray(tempList)
-					console.log(priceID)
 				});
 			tempCount += 1;
 			setCount(tempCount)
@@ -202,7 +200,6 @@ const OrdersQuotesProvider = () => {
 
 	console.log(priceIDArray)
 	// console.log(orderList)
-	console.log(quantityInput)
 
 	return (
 		<SafeAreaView style={styles.container} >
@@ -235,7 +232,7 @@ const OrdersQuotesProvider = () => {
 									<Text style={{ color: "black", fontSize: 15, marginLeft: "42%", marginTop: "3%" }}> Date: {item.selectedDay} at {Math.trunc(item.selectedTime)}:{((item.selectedTime % 1) * 60)}{item.selectedTime % 1 == 0 ? "0" : null} {Math.trunc(item.selectedTime) > 10 ? "PM" : "AM"}</Text>
 
 									{item.quotable == "quotable" && item.quoteID == undefined ?
-										<TouchableOpacity style={styles.quote} onPress={() => { setModalVisible(true), fetchOrders(), setIndex(index), setCustomerID(item.customerID), setPriceID(item.priceID), setDocID(item.docID), setUserID(item.user) }}>
+										<TouchableOpacity style={styles.quote} onPress={() => { setModalVisible(true), fetchOrders(), setIndex(index), setCustomerID(item.customerID), setDocID(item.docID), setUserID(item.user) }}>
 											<Text style={{ fontSize: 15, color: "white" }}>Create Quote</Text>
 										</TouchableOpacity> : null}
 
@@ -275,7 +272,7 @@ const OrdersQuotesProvider = () => {
 										<KeyboardAvoidingView behavior="height" style={{ flex: 1 }} >
 
 											<View style={{ flexDirection: "column", flexWrap: "wrap" }}>
-												{orderList[index1].priceID.map((e, index) => {
+												{orderList[index1].priceIDArray.map((e, index) => {
 													return (
 														<View style={styles.inputContainer}>
 															<TextInput
@@ -283,7 +280,7 @@ const OrdersQuotesProvider = () => {
 																value={priceIDArray[priceIDArray.indexOf(e)]}
 																onChangeText={(text) => { inputHandler(e, text) }}
 																onPressIn={() => { setQuantityInput(e) }}
-																placeholder={priceIDArray[priceIDArray.findIndex(value => value.docID == docID && value.price == e)].name}
+																placeholder={e.name}
 																// placeholder={e}
 																style={styles.input}
 																secureTextEntry={false}

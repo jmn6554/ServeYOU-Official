@@ -55,7 +55,7 @@ const OrderQuotesReceiver = () => {
 							companyName: doc.data().companyName,
 							serviceName: doc.data().serviceName,
 							productID: doc.data().productID,
-							priceID: doc.data().priceID,
+							priceIDArray: doc.data().priceIDArray,
 							quoteID: doc.data().quoteID,
 							quoted: doc.data().quoted,
 							quantity: doc.data().quantity,

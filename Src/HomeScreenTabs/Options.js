@@ -26,7 +26,7 @@ const Services2 = ({ route }) => {
 	const [modalVisible, setModalVisible] = useState(false);
 	const [animateModal, setanimateModal] = useState(true);
 	const navigation = useNavigation();
-	const [priceIDArray, setPriceIDArray] = useState([route.params.priceID]);
+	const [priceIDArray, setPriceIDArray] = useState([{ price: route.params.priceID, name: route.params.serviceName }]);
 
 	console.log(priceIDArray)
 	useEffect(() => {
@@ -157,7 +157,7 @@ const Services2 = ({ route }) => {
 		}
 
 		else if (check.current[itemName] == "#0b84db") {
-			setPriceIDArray(priceIDArray => [...priceIDArray, priceID]);
+			setPriceIDArray(priceIDArray => [...priceIDArray, { price: priceID, name: itemName }]);
 		}
 	}
 
@@ -202,7 +202,7 @@ const Services2 = ({ route }) => {
 
 								<Calendar
 									onDayPress={day => {
-										navigation.navigate("Agenda", { date: day.dateString, userID: route.params.userID, cartItems: route.params.cartItems, companyName: route.params.companyName, cartOptions: cart, quotable: route.params.quotable, priceID: route.params.priceID, productID: route.params.productID, priceUnit: route.params.priceUnit, priceID: priceIDArray })
+										navigation.navigate("Agenda", { date: day.dateString, userID: route.params.userID, cartItems: route.params.cartItems, companyName: route.params.companyName, cartOptions: cart, quotable: route.params.quotable, priceID: route.params.priceID, productID: route.params.productID, priceUnit: route.params.priceUnit, priceIDArray: priceIDArray })
 										setModalVisible(false)
 										console.log(priceIDArray)
 										// console.log(day.dateString)

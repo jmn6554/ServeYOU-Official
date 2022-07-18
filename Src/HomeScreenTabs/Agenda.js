@@ -152,7 +152,7 @@ const Agendas = ({ route }) => {
 			serviceName: route.params.cartItems,
 			productID: route.params.productID,
 			// priceID: route.params.priceID,
-			priceID: route.params.priceID,
+			priceIDArray: route.params.priceIDArray,
 			priceUnit: route.params.priceUnit,
 			customerID: customerID,
 			cartOptions: route.params.cartOptions,
