@@ -28,6 +28,7 @@ import { deleteObject, getDownloadURL, getStorage, ref, uploadBytes, uploadBytes
 import { getFunctions, httpsCallable } from 'firebase/functions';
 import NumberInputArray from "../Components/CustomInput/NumberInputArray"
 import { set } from "react-native-reanimated";
+import { enableNetworkProviderAsync } from "expo-location";
 
 const OrdersQuotesProvider = () => {
 	const [quantity, setQuantity] = useState();
@@ -44,7 +45,7 @@ const OrdersQuotesProvider = () => {
 	const [count, setCount] = useState("");
 	const [index1, setIndex] = useState(0);
 	const [quantityInput, setQuantityInput] = useState("");
-	const [priceIDArray, setPriceIDArray] = useState([]);
+	const [priceIDArray, setPriceIDArray] = useState([{ name: "", docID: "" }]);
 	var tempCount = 0;
 
 	useEffect(async () => {
@@ -89,10 +90,10 @@ const OrdersQuotesProvider = () => {
 						console.log(e.priceID);
 						while (tempPriceIDCount < e.cartOptions.length + 1) {
 							if (tempPriceIDCount == 0) {
-								tempList.push({ price: e.priceID[tempPriceIDCount], quantity: "", name: e.serviceName.current.name, docID: e.docID })
+								tempList.push({ price: e.priceID[tempPriceIDCount], quantity: "", name: e.serviceName.current.name, docID: e.docID, index: index })
 							}
 							else if (tempPriceIDCount > 0) {
-								tempList.push({ price: e.priceID[tempPriceIDCount], quantity: "", name: e.cartOptions[tempPriceIDCount - 1].name, docID: e.docID })
+								tempList.push({ price: e.priceID[tempPriceIDCount], quantity: "", name: e.cartOptions[tempPriceIDCount - 1].name, docID: e.docID, index: index })
 							}
 							tempPriceIDCount += 1;
 						}
@@ -201,6 +202,7 @@ const OrdersQuotesProvider = () => {
 
 	console.log(priceIDArray)
 	// console.log(orderList)
+	console.log(quantityInput)
 
 	return (
 		<SafeAreaView style={styles.container} >
@@ -281,7 +283,7 @@ const OrdersQuotesProvider = () => {
 																value={priceIDArray[priceIDArray.indexOf(e)]}
 																onChangeText={(text) => { inputHandler(e, text) }}
 																onPressIn={() => { setQuantityInput(e) }}
-																// placeholder={priceIDArray[priceIDArray.findIndex(e => { e.docID == docID && e == quantityInput })].name + " quantity"}
+																placeholder={priceIDArray[priceIDArray.findIndex(value => value.docID == docID && value.price == e)].name}
 																// placeholder={e}
 																style={styles.input}
 																secureTextEntry={false}
@@ -326,6 +328,7 @@ const OrdersQuotesProvider = () => {
 		</SafeAreaView >
 	);
 };
+
 
 const styles = StyleSheet.create({
 	container: {
