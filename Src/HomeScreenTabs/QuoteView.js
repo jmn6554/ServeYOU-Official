@@ -21,6 +21,7 @@ const QuoteView = ({ route }) => {
 	const [orderList, setOrderList] = useState("");
 	const [userDocReference, setUserDocReference] = useState("");
 	const [quoteObject, setQuoteObject] = useState("");
+	const [quoteLineItems, setQuoteLineItems] = useState("");
 	const [loading, setLoading] = useState(true);
 	const height = Dimensions.get("screen").height
 	const width = Dimensions.get("screen").width
@@ -73,16 +74,19 @@ const QuoteView = ({ route }) => {
 	const quoteRetrieval = async () => {
 		const functions = getFunctions()
 		const response = await httpsCallable(functions, 'quoteRetrieval')(route.params.quoteID).then(function (result) {
-			console.log(result.data.quote)
+			// console.log(result.data.quote);
 			const quote = result.data.quote;
-			setQuoteObject(result.data.quote)
+			const quoteLineItems = result.data.lineItems;
+			setQuoteObject(quote);
+			setQuoteLineItems(quoteLineItems);
+			console.log(quoteLineItems);
 			return {
-				quote: quote
+				quote: quote,
+				quoteLineItems: quoteLineItems,
 			};
 		}).catch(console.log)
 		setLoading(false)
 		return response
-
 	};
 
 

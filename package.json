@@ -35,7 +35,7 @@
     "expo-location": "~14.0.1",
     "expo-status-bar": "~1.2.0",
     "firebase": "^9.6.6",
-    "firebase-functions": "^3.21.2",
+    "firebase-functions": "^3.22.0",
     "firebase-tools": "^10.9.2",
     "geolib": "^3.3.3",
     "ionicons": "^6.0.2",
