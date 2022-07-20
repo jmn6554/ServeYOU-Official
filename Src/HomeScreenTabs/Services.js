@@ -1,33 +1,24 @@
 import React, { useState, useEffect, useRef } from "react";
 import { View, Text, SafeAreaView, StyleSheet, Alert, FlatList, Modal, Image, KeyboardAvoidingView, TouchableOpacity, Pressable, Keyboard, Dimensions, TouchableHighlight } from "react-native";
-import { SpeedDial, Overlay } from 'react-native-elements';
-import GestureRecognizer from 'react-native-swipe-gestures';
 import CustomInput from "../Components/CustomInput";
-import CustomButton from "../Components/CustomButtons/CustomButton";
 import ModalButtons from "../Components/CustomButtons/ModalButtons";
-import ModalButton2 from "../Components/CustomButtons/ModalButton2"
-import ElipseButton from "../Components/CustomButtons/ElipseButton"
 import PlusButton from "../Components/CustomButtons/PlusButton"
 import DeleteButton from "../Components/CustomButtons/DeleteButton"
 import EditButton from "../Components/CustomButtons/EditButton"
 import NumberInput from "../Components/CustomInput/NumberInput"
-import DropDownPicker from "react-native-dropdown-picker";
-import Swipeout from 'react-native-swipeout';
 import firebase from "firebase/compat/app";
 import { auth, sendEmailVerification } from "../../Firebase";
 import "firebase/compat/firestore";
 import 'firebase/compat/auth';
-import GetLocation from 'react-native-get-location'
 import * as ImagePicker from 'expo-image-picker'
 import SwipeUpDownModal from 'react-native-swipe-modal-up-down';
-import { ScrollView } from "react-native-gesture-handler";
-import { NavigationContainer, useNavigation } from "@react-navigation/native";
-// import * as storage from "firebase/storage"
+import { useNavigation } from "@react-navigation/native";
 import "firebase/compat/storage";
 import { deleteObject, getDownloadURL, getStorage, ref, uploadBytes, uploadBytesResumable } from "firebase/storage";
 import RNPickerSelect from 'react-native-picker-select';
 import { getFunctions, httpsCallable } from 'firebase/functions';
 import { SliderBox } from "react-native-image-slider-box";
+import uuid from 'react-native-uuid';
 
 const Services2 = () => {
 	const screenHeight = Dimensions.get("screen").height;
@@ -36,9 +27,9 @@ const Services2 = () => {
 	const [description, setDescription] = useState("");
 	const [price, setPrice] = useState("");
 	const [serviceList, setServiceList] = useState("");
-	const [userAddress, setUserAddress] = useState("");
+	const [docID, setDocID] = useState("");
 	const [Fetch, setFetch] = useState("");
-	const [image, setImage] = useState("");
+	const [image, setServiceImage] = useState("");
 	const [modalVisible, setModalVisible] = useState(false);
 	const [modalVisible1, setModalVisible1] = useState(false);
 	const [modalVisible2, setModalVisible2] = useState(false);
@@ -46,17 +37,56 @@ const Services2 = () => {
 	const [animateModal, setanimateModal] = useState(false);
 	const navigation = useNavigation();
 	const [pricePickerValue, setPricePickerValue] = useState("");
-	const [sliderImages, setSliderImages] = useState([]);
-	const [reload, setReload] = useState(0);
-	const [priceMeasurementUnits, setpriceMeasurementUnits] = useState("")
-	const priceMeasurementUnitsArray = [1, 2, 3];
+	const [showCaseImages, setShowCaseImages] = useState([]);
+	const [showCaseImagePicked, setShowCaseImagePicked] = useState("");
+
+	useEffect(() => {
+		fetchServices();
+	}, [Fetch])
+
+	console.log(showCaseImages);
+
+	const addShowCasePicture = async (imagePicked) => {
+		var showCaseImagesTemp = [...showCaseImages];
+		const db = firebase.firestore();
+		const user = auth.currentUser.uid;
+
+		// console.log(showCaseImagesTemp);
+
+		const blob = await new Promise((resolve, reject) => {
+			const xhr = new XMLHttpRequest();
+			xhr.onload = function () {
+				resolve(xhr.response);
+			};
+			xhr.onerror = function (e) {
+				console.log(e);
+				reject(new TypeError("Network request failed"));
+			};
+			xhr.responseType = "blob";
+			xhr.open("GET", imagePicked, true);
+			xhr.send(null);
+		});
+
+		const ref1 = ref(getStorage(), "showcase/" + user + uuid.v1());
+		const result = await uploadBytesResumable(ref1, blob);
+		const imageURL = await getDownloadURL(ref1);
+
+		console.log(imageURL)
+		console.log(showCaseImages)
+
+		showCaseImagesTemp.push(imageURL)
+		setShowCaseImages(showCaseImages => [...showCaseImages, imageURL]);
+
+		db.collection("Users").doc(docID).update({ showCaseImages: showCaseImagesTemp });
+
+		blob.close();
+	}
+
 
 
 	const addService = async (productID, priceID, serviceType) => {
 		const db = firebase.firestore();
 		const user = auth.currentUser.uid;
-
-		// console.log(image)
 
 		if (image != "" && image != undefined && image != null) {
 			const blob = await new Promise((resolve, reject) => {
@@ -86,7 +116,6 @@ const Services2 = () => {
 				priceID: priceID,
 				productID: productID,
 				serviceType: serviceType,
-				address: userAddress,
 				user: user,
 				image: imageURL,
 				created: firebase.firestore.Timestamp.now(),
@@ -101,7 +130,6 @@ const Services2 = () => {
 				priceID: priceID,
 				productID: productID,
 				serviceType: serviceType,
-				address: userAddress,
 				user: user,
 				// image: imageURL,
 				created: firebase.firestore.Timestamp.now(),
@@ -175,7 +203,6 @@ const Services2 = () => {
 							name: name,
 							description: description,
 							price: price,
-							address: userAddress,
 							image: imageURL,
 							created: firebase.firestore.Timestamp.now(),
 						})
@@ -186,36 +213,35 @@ const Services2 = () => {
 			});
 
 		fetchServices();
-
-
 	}
 
 	useEffect(() => {
-		const fetchAddress = async () => {
+		const fetchUserInfo = async () => {
 			try {
 				const list = [];
 				const db = firebase.firestore();
 				const user = auth.currentUser.uid;
 				await db
 					.collection('Users')
+					.where("userID", "==", user)
 					.get()
 					.then((querySnapshot) => {
 						querySnapshot.forEach((doc) => {
 							const {
-								address,
-								userID
+								showCaseImages
 							} = doc.data();
-							// console.log(address.lat)
-							if (doc.data().userID == user) {
-								list.push({
-									lat: address.lat,
-									lng: address.lng
-								});
+
+							setDocID(doc.id)
+
+							if (showCaseImages != undefined) {
+								setShowCaseImages([showCaseImages])
+							}
+							else {
+								setShowCaseImages([])
 							}
 						});
 					});
-
-				setUserAddress(list);
+				// console.log(docID)
 				setFetch(false);
 				// console.log(userAddress)
 
@@ -223,9 +249,9 @@ const Services2 = () => {
 				console.log(e);
 			}
 		};
-		fetchAddress();
+		fetchUserInfo();
 
-	}, [Fetch])
+	}, [])
 
 	const fetchServices = async () => {
 		try {
@@ -268,13 +294,6 @@ const Services2 = () => {
 		}
 	};
 
-	useEffect(() => {
-		// console.log(JSON.stringify(image))
-
-		fetchServices();
-
-	}, [Fetch])
-
 	const createStripePrice = async (serviceType) => {
 		const data = { name: name, price: price * 100 }
 		const functions = getFunctions()
@@ -310,10 +329,10 @@ const Services2 = () => {
 		setName("");
 		setDescription("");
 		setPrice("");
-		setImage("")
+		setServiceImage("")
 	}
 
-	const pickImage = async () => {
+	const pickServiceImage = async () => {
 		let result = await ImagePicker.launchImageLibraryAsync({
 			mediaTypes: ImagePicker.MediaTypeOptions.All,
 			allowsEditing: true,
@@ -324,8 +343,21 @@ const Services2 = () => {
 		// console.log(result);
 
 		if (!result.cancelled) {
-			setImage(result.uri);
-			// console.log("image: " + JSON.stringify(result))
+			setServiceImage(result.uri);
+		}
+	};
+
+	const pickShowcaseImage = async () => {
+		let result = await ImagePicker.launchImageLibraryAsync({
+			mediaTypes: ImagePicker.MediaTypeOptions.All,
+			allowsEditing: true,
+			aspect: [16, 9],
+			quality: 0.35,
+		});
+
+		if (!result.cancelled) {
+			// setShowCaseImagePicked(result.uri);
+			addShowCasePicture(result.uri);
 		}
 	};
 
@@ -343,13 +375,24 @@ const Services2 = () => {
 
 			<SafeAreaView style={styles.container2}>
 
-			<SliderBox style={{screenWidth}} images={sliderImages} />
-
 				<FlatList
 					data={serviceList}
 					keyExtractor={(item) => item.id}
 					extraData={serviceList}
-					ListFooterComponent={<View style={{ height: 90 }} />}
+
+					ListHeaderComponent=
+					{showCaseImages != "" ?
+						<View style={{ marginBottom: 20, zIndex: 2 }}>
+							<SliderBox
+								ImageComponentStyle={{ borderRadius: 15, width: '97%' }}
+								onCurrentImagePressed={() => console.log("hey")}
+								sliderBoxHeight={200} images={showCaseImages} />
+						</View> :
+						<TouchableOpacity style={{ height: screenHeight * 0.15, width: screenWidth * 0.99, marginBottom: 20, justifyContent: "center", alignItems: "center", backgroundColor: "transparent", borderRadius: 25, borderBottomWidth: 1, borderTopWidth: 1, marginStart: 2 }} onPress={() => pickShowcaseImage()}>
+							<Text style={{ fontWeight: "500", fontSize: 20 }}>Add Showcase</Text>
+						</TouchableOpacity>}
+
+					ListFooterComponent={<View style={{ height: screenHeight * 0.02 }} />}
 					renderItem={({ item, separators }) => (
 						<SafeAreaView >
 							<TouchableOpacity onPress={() => navigation.navigate("ServicesAdditional", { serviceName: item.name })}>
@@ -366,7 +409,7 @@ const Services2 = () => {
 												uri: item.image,
 											}} />
 									</View>
-									<View style={{ position: "absolute", top: Dimensions.get("screen").height * 0.20 }}>
+									<View style={{ position: "absolute", top: screenHeight * 0.20 }}>
 
 										<Text style={{ color: "black", fontWeight: "bold" }} >
 											<Text style={{ color: "black", fontSize: 25, fontWeight: "bold" }}> {item.name} </Text>
@@ -435,7 +478,7 @@ const Services2 = () => {
 														/>
 														<ModalButtons
 															text="Add Banner"
-															onPress={pickImage}
+															onPress={pickServiceImage}
 														/>
 
 														<ModalButtons
@@ -523,7 +566,7 @@ const Services2 = () => {
 
 										<ModalButtons
 											text="Add Picture"
-											onPress={pickImage}
+											onPress={pickServiceImage}
 										/>
 
 
@@ -612,7 +655,7 @@ const Services2 = () => {
 
 										<ModalButtons
 											text="Add Picture"
-											onPress={pickImage}
+											onPress={pickServiceImage}
 										/>
 
 
@@ -751,7 +794,7 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 		padding: 15,
 		width: "100%",
-		height: "100%"
+		height: "100%",
 	},
 
 	container2: {
@@ -760,10 +803,10 @@ const styles = StyleSheet.create({
 		alignContent: "center",
 		padding: 15,
 		width: "100%",
-		height: "100%",
-		marginTop: 45,
+		height: "85%",
+		// marginTop: 45,
 		position: "relative",
-		top: "3%"
+		// top: "3%"
 
 	},
 
