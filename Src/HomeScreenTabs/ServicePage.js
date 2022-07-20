@@ -18,6 +18,7 @@ import {
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import uuid from 'react-native-uuid';
 import * as Haptics from 'expo-haptics';
+import { SliderBox } from "react-native-image-slider-box";
 
 const Services3 = ({ route, navigation }) => {
 	const isFocused = useIsFocused();
@@ -154,20 +155,20 @@ const Services3 = ({ route, navigation }) => {
 		})
 	}
 
-	const onRefresh = React.useCallback(() => {
-		setRefreshing(true);
-		Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy)
-		if (address != null) {
-			fetchServices();
-		}
-		else {
-			setIntervals(false)
-		}
+	// const onRefresh = React.useCallback(() => {
+	// 	setRefreshing(true);
+	// 	Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy)
+	// 	if (address != null) {
+	// 		fetchServices();
+	// 	}
+	// 	else {
+	// 		setIntervals(false)
+	// 	}
 
-		setTimeout(() => {
-			setRefreshing(false);
-		}, 1000);
-	}, []);
+	// 	setTimeout(() => {
+	// 		setRefreshing(false);
+	// 	}, 1000);
+	// }, []);
 
 	const nextDays = [
 		'2022-03-01',
@@ -201,18 +202,21 @@ const Services3 = ({ route, navigation }) => {
 				</TouchableOpacity>
 			</View>
 
+			{/* <SliderBox images={this.state.images} /> */}
+
+
 			{/* {loading == true ? <LottieView style={{zIndex:999}} source={require("../../assets/50738-loading-line.json")} autoPlay loop ref={ref} /> : null} */}
 
 			<SafeAreaView style={styles.container2}>
 
 				<FlatList
-					refreshControl={<RefreshControl
-						refreshing={refreshing}
-						onRefresh={onRefresh}
-						tintColor="black"
-						colors={['transparent']}
-						style={{ backgroundColor: "transparent" }}
-					/>}
+					// refreshControl={<RefreshControl
+					// 	refreshing={refreshing}
+					// 	onRefresh={onRefresh}
+					// 	tintColor="black"
+					// 	colors={['transparent']}
+					// 	style={{ backgroundColor: "transparent" }}
+					// />}
 					data={serviceList}
 					keyExtractor={(item) => item.id}
 					extraData={serviceList}

@@ -487,7 +487,7 @@ const Services2 = (trigger) => {
 									ListFooterComponent={<View style={{ height: 0 }} />}
 									renderItem={({ item }) => (
 										<SafeAreaView >
-											<View style={{ width: windowWidth * 0.97, height: windowHeight * 0.07, backgroundColor: "white", borderBottomWidth: 0.6, justifyContent: "center", marginBottom: 3 }}>
+											<View style={{ width: windowWidth * 1, height: windowHeight * 0.07, backgroundColor: "white", borderBottomWidth: 0.6, justifyContent: "center", marginBottom: 3 }}>
 												<Text style={{ fontSize: 20 }}> {item.streetAddress} </Text>
 
 											</View>
@@ -495,9 +495,9 @@ const Services2 = (trigger) => {
 									)}
 									renderHiddenItem={(item, rowMap) => (
 										<TouchableOpacity onPress={() => { deleteRecentLocation(item.index), rowMap[item.item.id].closeRow() }}>
-											<View style={{ backgroundColor: "red", height: windowHeight * 0.07, width: 90, borderRadius: 0, position: "absolute", right: 0 }}>
+											<View style={{ backgroundColor: "red", height: windowHeight * 0.07, width: 90, borderRadius: 0, position: "absolute", right: 0, justifyContent:"center", alignItems: "center" }}>
 												{/* <View style={{ position: "absolute" }}> */}
-												<Text style={{ fontSize: 20, fontWeight: "500" }}>Delete</Text>
+												<Text style={{ fontSize: 20, fontWeight: "500", color: "white" }}>Delete</Text>
 												{/* </View> */}
 											</View>
 										</TouchableOpacity>

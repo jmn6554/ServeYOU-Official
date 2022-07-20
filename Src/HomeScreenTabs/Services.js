@@ -27,8 +27,7 @@ import "firebase/compat/storage";
 import { deleteObject, getDownloadURL, getStorage, ref, uploadBytes, uploadBytesResumable } from "firebase/storage";
 import RNPickerSelect from 'react-native-picker-select';
 import { getFunctions, httpsCallable } from 'firebase/functions';
-import { BlurView } from 'expo-blur';
-
+import { SliderBox } from "react-native-image-slider-box";
 
 const Services2 = () => {
 	const screenHeight = Dimensions.get("screen").height;
@@ -47,6 +46,7 @@ const Services2 = () => {
 	const [animateModal, setanimateModal] = useState(false);
 	const navigation = useNavigation();
 	const [pricePickerValue, setPricePickerValue] = useState("");
+	const [sliderImages, setSliderImages] = useState([]);
 	const [reload, setReload] = useState(0);
 	const [priceMeasurementUnits, setpriceMeasurementUnits] = useState("")
 	const priceMeasurementUnitsArray = [1, 2, 3];
@@ -342,6 +342,8 @@ const Services2 = () => {
 			</View>
 
 			<SafeAreaView style={styles.container2}>
+
+			<SliderBox style={{screenWidth}} images={sliderImages} />
 
 				<FlatList
 					data={serviceList}

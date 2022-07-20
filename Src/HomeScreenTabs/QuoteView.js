@@ -114,9 +114,15 @@ const QuoteView = ({ route }) => {
 					<Text style={{ color: "black", fontSize: 15, position: "absolute", top: height * 0.05, right: width * 0.05, fontWeight: "500" }}>Valid until: {moment.unix(quoteObject.expires_at).format("DD MMM, yyyy")}</Text>
 					<Text style={{ color: "black", fontSize: 21, position: "absolute", top: height * 0.3, right: width * 0.45, fontWeight: "bold" }}>QTY</Text>
 					<Text style={{ color: "black", fontSize: 21, position: "absolute", top: height * 0.3, right: width * 0.05, fontWeight: "bold" }}>Amount</Text>
-					{quoteLineItems.data.map(e => { return (<Text style={{ color: "black", fontSize: 17, position: "relative", top: height * 0.32, marginBottom: 20, fontWeight: "bold", flexDirection: "column" }}>{e.description}</Text>) })}
-					{quoteLineItems.data.map(e => { return (<Text style={{ color: "black", fontSize: 17, position: "relative", top: height * 0.18, left: width * 0.5, marginBottom: 20, fontWeight: "bold", flexDirection: "column" }}>{e.quantity}</Text>) })}
-					{quoteLineItems.data.map(e => { return (<Text style={{ color: "black", fontSize: 17, position: "relative", top: height * 0.03, left: width * 0.75, marginBottom: 20, fontWeight: "bold", flexDirection: "column" }}>${e.price.unit_amount / 100}</Text>) })}
+					<View style={{position:"absolute", top: height * 0.34, left: width * 0.03}}>
+					{quoteLineItems.data.map(e => { return (<Text style={{ color: "black", fontSize: 18, marginVertical: 5, fontWeight: "bold", flexDirection: "column" }}>{e.description}</Text>) })}
+					</View>
+					<View style={{position:"absolute", top: height * 0.34, left: width * 0.5}}>
+					{quoteLineItems.data.map(e => { return (<Text style={{ color: "black", fontSize: 18, marginBottom: 15, fontWeight: "bold", flexDirection: "column" }}>{e.quantity}</Text>) })}
+					</View>
+					<View style={{position:"absolute", top: height * 0.34, left: width * 0.76}}>
+					{quoteLineItems.data.map(e => { return (<Text style={{ color: "black", fontSize: 18, marginBottom: 15, fontWeight: "bold", flexDirection: "column" }}>${e.price.unit_amount / 100}</Text>) })}
+					</View>
 					<Text style={{ color: "black", fontSize: 18, position: "absolute", top: height * 0.08, right: width * 0.05, fontWeight: "bold" }}>${quoteObject.amount_total / 100}</Text>
 					{/* <Text style={{ color: "black", fontSize: 22, position: "absolute", top: height * 0.35, right: width * 0.05, fontWeight: "400" }}>${quoteObject.amount_total / 100}</Text> */}
 					<View style={{ borderTopWidth: 1, position: "absolute", top: height * 0.73, width: width * 1 }}>

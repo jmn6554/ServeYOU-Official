@@ -81,6 +81,7 @@ const HomeScreenReceiver = () => {
 			shifting="true"
 			barStyle={{
 				backgroundColor: 'rgba(255, 255, 255, 0.4)',
+				// backgroundColor: 'rgba(158, 178, 245, 0.8)',
 				position: "absolute",
 				bottom: 0,
 				right: 0,

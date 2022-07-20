@@ -27,12 +27,7 @@ import { auth, sendEmailVerification } from "../../../Firebase";
 import SwipeUpDownModal from 'react-native-swipe-modal-up-down';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import LottieView from 'lottie-react-native';
-import HomeScreenReceiver from "../../Home/HomeScreenReceiver";
-import Cart from "../../HomeScreenTabs/Cart";
-import { initializeApp } from "firebase/app"
-import { initializeAuth } from "firebase/auth"
-import { getReactNativePersistence } from "firebase/auth/react-native"
-import AsyncStorage from "@react-native-async-storage/async-storage"
+
 
 
 const SignInScreen = () => {
@@ -90,7 +85,7 @@ const SignInScreen = () => {
 			.then((userCredentials) => {
 				const user = userCredentials.user;
 				if (user && user.emailVerified) {
-					navigation.navigate("HomeReceiver")
+					navigation.navigate("HomeProvider")
 				}
 				else if (user && user.emailVerified === false) {
 					alert("Please verify your email!")
