@@ -11,19 +11,19 @@ import {
 	SafeAreaViewComponent,
 	ScrollView,
 } from "react-native";
-import SignInScreen from "./Src/Screens/SignInScreen/SignInScreen";
-import SignUpScreen from "./Src/SignUpScreen";
-import HomeScreenProvider from "./Src/Home/HomeScreenProvider";
-import HomeScreenReceiver from "./Src/Home/HomeScreenReceiver"
-import UserSelect from "./Src/UserSelectionScreen/UserSelect";
-import ServiceProvider from "./Src/UserSelectionScreen/ServiceProvider"
-import ServiceReceiver from "./Src/UserSelectionScreen/ServiceReceiver"
-import EmailVerification from "./Src/EmailVerificationScreen/EmailVerification";
-import ServicePage from "./Src/HomeScreenTabs/ServicePage"
-import Chat from "./Src/Chat/Chat"
-import Agenda from "./Src/HomeScreenTabs/Agenda";
-import Options from "./Src/HomeScreenTabs/Options"
-import ServicesAdditional from "./Src/HomeScreenTabs/ServicesAdditional"
+import SignInScreen from "./src/Screens/SignInScreen/SignInScreen";
+import SignUpScreen from "./src/SignUpScreen";
+import HomeScreenProvider from "./src/Home/HomeScreenProvider";
+import HomeScreenReceiver from "./src/Home/HomeScreenReceiver"
+import UserSelect from "./src/UserSelectionScreen/UserSelect";
+import ServiceProvider from "./src/UserSelectionScreen/ServiceProvider"
+import ServiceReceiver from "./src/UserSelectionScreen/ServiceReceiver"
+import EmailVerification from "./src/EmailVerificationScreen/EmailVerification";
+import ServicePage from "./src/HomeScreenTabs/ServicePage"
+import Chat from "./src/Chat/Chat"
+import Agenda from "./src/HomeScreenTabs/Agenda";
+import Options from "./src/HomeScreenTabs/Options"
+import ServicesAdditional from "./src/HomeScreenTabs/ServicesAdditional"
 import {
 	useNavigation,
 	NavigationContainer,
@@ -33,7 +33,7 @@ import { createStackNavigator, HeaderTitle } from "@react-navigation/stack";
 import Config from "react-native-config"
 import { CardField, useStripe, StripeProvider, initStripe } from '@stripe/stripe-react-native';
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import QuoteView from "./Src/HomeScreenTabs/QuoteView";
+import QuoteView from "./src/HomeScreenTabs/QuoteView";
 
 
 const Stack = createStackNavigator();
@@ -56,7 +56,7 @@ const App = () => {
 	global.cartItemCounter = 0;
 	global.initializationVariable = 0;
 
-	
+
 	const fetchStripeKey = async () => {
 		try {
 			var key = ""
@@ -161,7 +161,7 @@ const App = () => {
 						name="ServiceProvider"
 						component={ServiceProvider} />
 
-							<Stack.Screen options={{
+					<Stack.Screen options={{
 						headerTransparent: true,
 						headerTitle: " ",
 						headerBackTitle: false,
