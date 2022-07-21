@@ -10,5 +10,12 @@ npm-debug.*
 *.orig.*
 web-build/
 
+# log files
+*.log
+
+# IDE files
+.idea
+.vscode
+
 # macOS
 .DS_Store
