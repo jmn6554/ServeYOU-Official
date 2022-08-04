@@ -495,7 +495,7 @@ const Services2 = (trigger) => {
 									)}
 									renderHiddenItem={(item, rowMap) => (
 										<TouchableOpacity onPress={() => { deleteRecentLocation(item.index), rowMap[item.item.id].closeRow() }}>
-											<View style={{ backgroundColor: "red", height: windowHeight * 0.07, width: 90, borderRadius: 0, position: "absolute", right: 0, justifyContent:"center", alignItems: "center" }}>
+											<View style={{ backgroundColor: "red", height: windowHeight * 0.07, width: 90, borderRadius: 0, position: "absolute", right: 0, justifyContent: "center", alignItems: "center" }}>
 												{/* <View style={{ position: "absolute" }}> */}
 												<Text style={{ fontSize: 20, fontWeight: "500", color: "white" }}>Delete</Text>
 												{/* </View> */}

@@ -11,6 +11,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@expo/webpack-config": "~0.16.2",
     "@pnap/react-native-search-bar": "^1.0.4",
     "@react-native-async-storage/async-storage": "^1.17.6",
     "@react-native-community/blur": "^3.6.0",
@@ -74,6 +75,7 @@
     "react-native-reanimated": "^2.4.1",
     "react-native-safe-area-context": "3.3.2",
     "react-native-screens": "~3.10.1",
+    "react-native-spinkit": "^1.5.1",
     "react-native-swipe-gestures": "^1.0.5",
     "react-native-swipe-list-view": "^3.2.9",
     "react-native-swipe-modal-up-down": "^1.1.0",

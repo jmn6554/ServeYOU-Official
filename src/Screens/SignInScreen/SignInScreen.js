@@ -85,7 +85,7 @@ const SignInScreen = () => {
 			.then((userCredentials) => {
 				const user = userCredentials.user;
 				if (user && user.emailVerified) {
-					navigation.navigate("HomeProvider")
+					navigation.navigate("HomeReceiver")
 				}
 				else if (user && user.emailVerified === false) {
 					alert("Please verify your email!")
@@ -135,7 +135,7 @@ const SignInScreen = () => {
 				PressToanimate={animateModal}
 				ContentModal={
 					<View style={{ backgroundColor: "white", width: "100%", height: "100%", marginTop: 20, justifyContent: "center", alignItems: "center" }}>
-						<XButton onPress={() => setModalVisible(false)}></XButton>
+						{/* <XButton onPress={() => setModalVisible(false)}></XButton>
 						<Text style={{ fontSize: 40, fontWeight: "bold", position: "absolute", top: "7%", left: 25 }}>Sign In</Text>
 
 						<KeyboardAvoidingView>
@@ -172,8 +172,8 @@ const SignInScreen = () => {
 
 						<Text style={styles.textColor} onPress={onForgotPasswordPressed}>
 							Forgot password?
-						</Text>
-
+						</Text> */}
+						{/* 
 						<CustomButton3
 							text="Sign In with Facebook"
 							onPress={onSignInWithFacebook}
@@ -182,7 +182,7 @@ const SignInScreen = () => {
 						<CustomButton4
 							text="Sign In with Google"
 							onPress={onSignInWithGoogle}
-						/>
+						/> */}
 						<CustomButton5 text="Sign In with Apple" />
 					</View>
 				}
