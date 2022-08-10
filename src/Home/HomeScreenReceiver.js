@@ -5,7 +5,8 @@ import {
 	View,
 	SafeAreaView,
 	TabBarIOSItem,
-	RefreshControl
+	RefreshControl,
+	Dimensions
 } from "react-native";
 import CustomButton from "../Components/CustomButtons/CustomButton";
 import Search from "../HomeScreenTabs/Search";
@@ -34,22 +35,18 @@ import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 
 
 const HomeScreenReceiver = () => {
-	const navigation = useNavigation();
-	const [search, setSearch] = useState("");
-	const [location, setLocation] = useState("");
-	const [cartItemCount, setCartItemCount] = useState("");
-	
 	const Tab = createMaterialBottomTabNavigator();
-	const Stack = createStackNavigator();
+	const screenHeight = Dimensions.get("screen").height;
+	const screenWidth = Dimensions.get("screen").width;
 
 	console.log(global.cartItemCounter)
 
 	useEffect(() => {
 		console.log("working")
 		fetchCart();
-	  }, [global.cartItemCounter]);
-	
-	  const fetchCart = async () => {
+	}, [global.cartItemCounter]);
+
+	const fetchCart = async () => {
 		console.log("receiver fetchcart called")
 		try {
 			let cartCounter = 0;
@@ -66,28 +63,27 @@ const HomeScreenReceiver = () => {
 						}
 					});
 				});
-				global.cartItemCounter = cartCounter;
-			} catch (e) {
+			global.cartItemCounter = cartCounter;
+		} catch (e) {
 			console.log(e);
 		}
-	
+
 	};
 
 	return (
-		
+
 		<Tab.Navigator
 			initialRouteName="ServicesReceiver"
 			activeColor="black"
 			shifting="true"
 			barStyle={{
-				backgroundColor: 'rgba(255, 255, 255, 0.4)',
-				// backgroundColor: 'rgba(158, 178, 245, 0.8)',
+				backgroundColor: 'rgba(255, 255, 255, 0.8)',
 				position: "absolute",
-				bottom: 0,
+				bottom: screenHeight * 0,
 				right: 0,
 				left: 0,
 				alignContent: "center",
-				height: 75,
+				height: screenHeight * 0.08,
 			}}
 		>
 
@@ -221,7 +217,7 @@ const styles = StyleSheet.create({
 		right: 0,
 	},
 	bottomTabBar: {
-		backgroundColor: 'transparent',
+		// backgroundColor: 'transparent',
 	},
 });
 

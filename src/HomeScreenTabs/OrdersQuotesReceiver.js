@@ -17,8 +17,8 @@ const OrderQuotesReceiver = () => {
 	const [orderList, setOrderList] = useState("");
 	const [userDocReference, setUserDocReference] = useState("");
 	const isFocused = useIsFocused();
-	const height = Dimensions.get("screen").height;
-	const width = Dimensions.get("screen").width;
+	const screenHeight = Dimensions.get("screen").height;
+	const screenWidth = Dimensions.get("screen").width;
 
 	useEffect(() => {
 		fetchOrders();
@@ -95,12 +95,12 @@ const OrderQuotesReceiver = () => {
 
 	return (
 		<SafeAreaView style={styles.container} >
-			<View style={{ backgroundColor: "white", height: 90, width: 400, alignItems: "center", justifyContent: "center", position: "absolute", top: 0, borderColor: "white" }}>
-				<Text style={{ color: "black", fontSize: 25, marginTop: 30, fontWeight: "bold" }}>Orders</Text>
+			<View style={{ backgroundColor: "white", height: screenHeight * 0.1, width: screenWidth, alignItems: "center", justifyContent: "center", position: "absolute", top: 0, borderColor: "white" }}>
+				<Text style={{ color: "black", fontSize: 25, marginTop: screenHeight * 0.04, fontWeight: "bold" }}>Orders</Text>
 			</View>
 
 			{orderList[0] == null ? <LottieView source={require("../../assets/lf30_editor_spo1ak28.json")} autoPlay loop ref={ref} /> : null}
-			<View style={{ position: "absolute", top: Dimensions.get("screen").height * 0.70 }}>
+			<View style={{ position: "absolute", top: screenHeight * 0.70 }}>
 				{orderList[0] == null ? <ModalButtons style={{ fontSize: 25, marginTop: "140%", fontWeight: "400" }} text="Click here to continue shopping" onPress={() => navigation.navigate("My Services")}></ModalButtons> : null}
 			</View>
 
@@ -111,21 +111,21 @@ const OrderQuotesReceiver = () => {
 					data={orderList}
 					keyExtractor={(item) => item.id}
 					extraData={orderList}
-					ListFooterComponent={<View style={{ height: 90 }} />}
+					ListFooterComponent={<View style={{ height: screenHeight * 0.17 }} />}
 					renderItem={({ item, separators }) => (
 						<SafeAreaView >
 							<SafeAreaView >
 
 								<View style={styles.serviceHolder}>
-									<Text style={{ color: "black", fontSize: 18, fontWeight: "bold", position: "absolute", top: height * 0.015 }}>{item.serviceName.current.name} • ${item.serviceName.current.price}</Text>
-									<Text style={{ color: "black", fontSize: 16, fontWeight: "bold", marginStart: 10, position: "absolute", top: height * 0.05 }}> Options/Packages </Text>
+									<Text style={{ color: "black", fontSize: 18, fontWeight: "bold", position: "absolute", top: screenHeight * 0.015 }}>{item.serviceName.current.name} • ${item.serviceName.current.price}</Text>
+									<Text style={{ color: "black", fontSize: 16, fontWeight: "bold", marginStart: 10, position: "absolute", top: screenHeight * 0.05 }}> Options/Packages </Text>
 
 									<SafeAreaView style={{ flexDirection: "column", flexWrap: "wrap" }}>
 										{item.cartOptions.map(e => {
 											return (<Text style={{ fontSize: 15, marginStart: 14 }}>{e.name} • ${e.price}</Text>)
 										})}
 									</SafeAreaView>
-									<Text style={{ color: "black", fontSize: 15, position: "absolute", bottom: height * 0.005, left: width * 0.4 }}> Date: {item.selectedDay} at {Math.trunc(item.selectedTime)}:{((item.selectedTime % 1) * 60)} {Math.trunc(item.selectedTime) > 10 ? "PM" : "AM"}</Text>
+									<Text style={{ color: "black", fontSize: 15, position: "absolute", bottom: screenHeight * 0.005, left: screenWidth * 0.4 }}> Date: {item.selectedDay} at {Math.trunc(item.selectedTime)}:{((item.selectedTime % 1) * 60)} {Math.trunc(item.selectedTime) > 10 ? "PM" : "AM"}</Text>
 
 									{item.quotable == "quotable" && item.quoted == undefined ?
 										<View style={styles.quote}>
@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
 		padding: 15,
 		width: "100%",
 		height: "100%",
-		marginTop: 45,
+		marginTop: Dimensions.get("screen").height * 0.12,
 		position: "relative",
 		top: "3%"
 
@@ -232,7 +232,7 @@ const styles = StyleSheet.create({
 
 	serviceHolder: {
 		width: Dimensions.get("screen").width,
-		height: Dimensions.get("screen").height * 0.20,
+		height: Dimensions.get("screen").height * 0.2,
 		marginBottom: 3,
 		backgroundColor: "#ffffff",
 		alignContent: "flex-start",

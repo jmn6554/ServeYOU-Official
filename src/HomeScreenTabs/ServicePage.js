@@ -222,7 +222,7 @@ const Services3 = ({ route, navigation }) => {
 					extraData={serviceList}
 					ListFooterComponent={<View style={{ height: 20 }} />}
 					renderItem={({ item, separators }) => (
-						<TouchableOpacity onPress={() => { cartItems.current = { name: item.name, price: item.price}, navigation.navigate("Options", { userID: route.params.userID, cartItems: cartItems, companyName: route.params.companyName, serviceName: item.name, quotable: item.serviceType, priceID: item.priceID, productID: item.productID, priceUnit: item.priceUnit }) }}>
+						<TouchableOpacity onPress={() => { cartItems.current = { name: item.name, price: item.price }, navigation.navigate("Options", { userID: route.params.userID, cartItems: cartItems, companyName: route.params.companyName, serviceName: item.name, quotable: item.serviceType, priceID: item.priceID, productID: item.productID, priceUnit: item.priceUnit }) }}>
 							<SafeAreaView >
 
 								<View style={styles.serviceHolder}>
@@ -238,13 +238,13 @@ const Services3 = ({ route, navigation }) => {
 										<Text style={{ color: "black", fontSize: 25 }}> {item.name} </Text> <Text style={{ fontSize: 18, marginLeft: 5 }}>{item.price} {item.priceUnit}</Text>
 
 									</Text>
-									<Text style={{ color: "black", fontWeight:"400", marginTop: "2%", fontSize: 18 }}> {item.description}</Text>
-									
+									<Text style={{ color: "black", fontWeight: "400", marginTop: "2%", fontSize: 18 }}> {item.description}</Text>
+
 									{item.serviceType == "quotable" ?
-									<View style={styles.quote}>
-										<Text style={{ fontSize: 15, color: "white" }}>Requires Quote</Text>
-									</View>
-									: null
+										<View style={styles.quote}>
+											<Text style={{ fontSize: 15, color: "white" }}>Requires Quote</Text>
+										</View>
+										: null
 									}
 
 								</View>
@@ -282,7 +282,7 @@ const styles = StyleSheet.create({
 		padding: 15,
 		width: "100%",
 		height: "100%",
-		marginTop: 20,
+		marginTop: Dimensions.get("screen").height * 0.08,
 		position: "relative",
 		top: "4.35%"
 

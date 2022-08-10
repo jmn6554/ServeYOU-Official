@@ -27,6 +27,8 @@ const Agendas = ({ route }) => {
 	const [selectedTime, setSelectedTime] = useState("");
 	const navigation = useNavigation();
 	const [customerID, setCustomerID] = useState("");
+	const screenHeight = Dimensions.get("screen").height;
+	const screenWidth = Dimensions.get("screen").width;
 
 	console.log(route.params.priceID)
 
@@ -167,7 +169,7 @@ const Agendas = ({ route }) => {
 	return (
 		<View style={styles.container}>
 			<View style={{ backgroundColor: "white", height: 90, width: 400, alignItems: "center", justifyContent: "center", position: "absolute", top: 0 }}>
-				<Text style={{ color: "black", fontSize: 25, marginTop: 40, fontWeight: "bold" }}>Availabilities</Text>
+				<Text style={{ color: "black", fontSize: 25, marginTop: screenHeight * 0.045, fontWeight: "bold" }}>Availabilities</Text>
 				<Text style={{ fontSize: 15 }}>{route.params.date}</Text>
 			</View>
 

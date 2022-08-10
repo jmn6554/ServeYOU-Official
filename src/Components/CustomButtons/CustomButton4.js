@@ -5,13 +5,14 @@ import {
 	StyleSheet,
 	Pressable,
 	TouchableOpacity,
+	Dimensions
 } from "react-native";
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 
 const CustomButton4 = ({ onPress, text, type }) => {
 	return (
 		<TouchableOpacity onPress={onPress} style={[styles.container]}>
-			<View style={{ position: "absolute", left: 50 }}>
+			<View style={{ alignContent: "center", marginRight: Dimensions.get("screen").width * 0.45 }}>
 				<Ionicons
 					name="logo-google"
 					type="ionicon"
@@ -25,13 +26,13 @@ const CustomButton4 = ({ onPress, text, type }) => {
 };
 const styles = StyleSheet.create({
 	container: {
-		width: "80%",
+		width: "75%",
 		borderRadius: 15,
-		height: 40,
+		height: Dimensions.get("screen").height * 0.06,
 		justifyContent: "center",
 		alignItems: "center",
 		marginVertical: 10,
-		marginTop: 5,
+		marginTop: Dimensions.get("screen").height * 0.002,
 		backgroundColor: "#DB4437",
 		flexDirection: "row"
 	},
@@ -40,7 +41,7 @@ const styles = StyleSheet.create({
 		fontWeight: "bold",
 		color: "white",
 		position: "absolute",
-		left: 90
+		left: Dimensions.get("screen").width * 0.22
 	},
 });
 export default CustomButton4;

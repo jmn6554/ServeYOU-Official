@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback, useLayoutEffect } from 'react';
-import { View, Text, SafeAreaView, StyleSheet, Alert, FlatList, Modal, Image, TouchableOpacity, Pressable, RefreshControl } from "react-native";
+import { View, Text, SafeAreaView, StyleSheet, Alert, FlatList, Modal, Image, TouchableOpacity, Pressable, RefreshControl, Dimensions } from "react-native";
 import firebase from "firebase/compat/app";
 import { auth, sendEmailVerification } from "../../Firebase";
 import "firebase/compat/firestore";
@@ -19,6 +19,8 @@ const ChatList = () => {
 	const [Fetch, setFetch] = useState(false)
 	const [passedUser, setPassedUser] = useState("")
 	const isFocused = useIsFocused();
+	const screenHeight = Dimensions.get("screen").height;
+	const screenWidth = Dimensions.get("screen").width;
 
 	//checks if user is using the chatlist and will re-render
 	useEffect(() => {
@@ -95,8 +97,8 @@ const ChatList = () => {
 	return (
 		<SafeAreaView style={styles.container} >
 
-			<View style={{ backgroundColor: "white", height: 90, width: 400, alignItems: "center", justifyContent: "center", position: "absolute", top: 0, borderColor: "white" }}>
-				<Text style={{ color: "black", fontSize: 25, marginTop: 30, fontWeight: "bold" }}>Messages</Text>
+			<View style={{ backgroundColor: "white", height: screenHeight * 0.1, width: screenWidth, alignItems: "center", justifyContent: "center", position: "absolute", top: 0, borderColor: "white" }}>
+				<Text style={{ color: "black", fontSize: 25, marginTop: screenHeight * 0.03, fontWeight: "bold" }}>Messages</Text>
 			</View>
 
 
@@ -153,14 +155,13 @@ const styles = StyleSheet.create({
 	},
 
 	container2: {
-
 		alignItems: "center",
 		justifyContent: "center",
 		alignContent: "center",
 		padding: 15,
 		width: "100%",
 		height: "100%",
-		marginTop: 20,
+		marginTop: Dimensions.get("screen").height * 0.05,
 		position: "relative",
 		top: "4.35%",
 		// borderWidth: 2
@@ -178,8 +179,8 @@ const styles = StyleSheet.create({
 	},
 
 	chatHolder: {
-		width: 390,
-		height: 70,
+		width: Dimensions.get("screen").width,
+		height: Dimensions.get("screen").height * 0.09,
 		marginBottom: 3,
 		backgroundColor: "#ffffff",
 		alignContent: "flex-start",
