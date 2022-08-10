@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { View, Text, SafeAreaView, StyleSheet, Alert, FlatList, Modal, Image, KeyboardAvoidingView, TouchableOpacity, SectionList, Pressable, Keyboard } from "react-native";
+import { View, Text, SafeAreaView, StyleSheet, Alert, FlatList, Modal, Image, KeyboardAvoidingView, TouchableOpacity, SectionList, Pressable, Keyboard, Dimensions } from "react-native";
 import firebase from "firebase/compat/app";
 import { auth, sendEmailVerification } from "../../Firebase";
 import { useNavigation, NavigationContainer, useIsFocused } from "@react-navigation/native";
@@ -27,6 +27,8 @@ const Services2 = ({ route }) => {
 	const [animateModal, setanimateModal] = useState(true);
 	const navigation = useNavigation();
 	const [priceIDArray, setPriceIDArray] = useState([{ price: route.params.priceID, name: route.params.serviceName }]);
+	const screenHeight = Dimensions.get("screen").height;
+	const screenWidth = Dimensions.get("screen").width;
 
 	console.log(priceIDArray)
 	useEffect(() => {
@@ -182,7 +184,7 @@ const Services2 = ({ route }) => {
 	return (
 		<SafeAreaView style={styles.container} >
 			<View style={{ backgroundColor: "white", height: 90, width: 400, alignItems: "center", justifyContent: "center", position: "absolute", top: 0, borderColor: "white" }}>
-				<Text style={{ color: "black", fontSize: 25, marginTop: 30, fontWeight: "bold" }}>Service Options</Text>
+				<Text style={{ color: "black", fontSize: 25, marginTop: screenHeight * 0.05, fontWeight: "bold" }}>Service Options</Text>
 			</View>
 
 			<SafeAreaView>
@@ -344,7 +346,7 @@ const styles = StyleSheet.create({
 
 	Modal: {
 		backgroundColor: 'transparent',
-		marginTop: "100%",
+		marginTop: Dimensions.get("screen").height * 0.42,
 	},
 
 	containerContent: { flex: 1, marginTop: "90%" },
@@ -357,7 +359,7 @@ const styles = StyleSheet.create({
 		height: 5,
 		width: 90,
 		backgroundColor: 'white',
-		marginTop: "90%",
+		marginTop: Dimensions.get("screen").height * 0.38,
 		borderRadius: 50
 	},
 

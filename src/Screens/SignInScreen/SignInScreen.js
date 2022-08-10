@@ -27,6 +27,7 @@ import { auth, sendEmailVerification } from "../../../Firebase";
 import SwipeUpDownModal from 'react-native-swipe-modal-up-down';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import LottieView from 'lottie-react-native';
+import { ScreenHeight } from "react-native-elements/dist/helpers";
 
 
 
@@ -39,8 +40,8 @@ const SignInScreen = () => {
 	const [animateModal, setanimateModal] = useState(true);
 	const isFocused = useIsFocused();
 	const ref = React.useRef();
-	const windowWidth = Dimensions.get('window').width;
-	const windowHeight = Dimensions.get('window').height;
+	const screenWidth = Dimensions.get('window').width;
+	const screenHeight = Dimensions.get('window').height;
 
 	useEffect(() => {
 		const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -85,7 +86,7 @@ const SignInScreen = () => {
 			.then((userCredentials) => {
 				const user = userCredentials.user;
 				if (user && user.emailVerified) {
-					navigation.navigate("HomeProvider")
+					navigation.navigate("HomeReceiver")
 				}
 				else if (user && user.emailVerified === false) {
 					alert("Please verify your email!")
@@ -123,7 +124,7 @@ const SignInScreen = () => {
 				fontWeight: "bold",
 				color: "black",
 				fontSize: 50,
-				marginTop: windowHeight * 0.65,
+				marginTop: screenHeight * 0.65,
 				marginBottom: 0,
 				marginRight: 95
 			}}>ServeYOU</Text>
@@ -134,11 +135,11 @@ const SignInScreen = () => {
 				modalVisible={modalVisible}
 				PressToanimate={animateModal}
 				ContentModal={
-					<View style={{ backgroundColor: "white", width: "100%", height: "100%", marginTop: 20, justifyContent: "center", alignItems: "center" }}>
+					<View style={{ backgroundColor: "white", width: "100%", height: "100%", marginTop: 20, alignItems: "center" }}>
 						<XButton onPress={() => setModalVisible(false)}></XButton>
-						<Text style={{ fontSize: 40, fontWeight: "bold", position: "absolute", top: "7%", left: 25 }}>Sign In</Text>
+						<Text style={{ fontSize: 40, fontWeight: "bold", marginTop: screenHeight * 0.03 }}>Sign In</Text>
 
-						<KeyboardAvoidingView>
+						<KeyboardAvoidingView style={{ marginTop: screenHeight * 0.01 }}>
 							<EmailInput
 								placeholder="Email"
 								value={email}
@@ -212,7 +213,7 @@ const styles = StyleSheet.create({
 	},
 
 	textColor: {
-		marginTop: 20,
+		marginTop: Dimensions.get("screen").height * 0.002,
 		textDecorationLine: 'underline',
 		fontWeight: "bold",
 		color: "#2c4391"

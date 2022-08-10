@@ -29,8 +29,8 @@ const Cart = () => {
 	const [loading, setLoading] = useState(true)
 	const [cartSubTotal, setCartSubTotal] = useState("");
 	const ref = React.useRef();
-	const [customerID, setCustomerID] = useState("");
-	const [ephemeralKey, setEphemeralKey] = useState("");
+	const screenHeight = Dimensions.get("screen").height;
+	const screenWidth = Dimensions.get("screen").width;
 
 	useEffect(() => {
 		if (isFocused) {
@@ -337,8 +337,7 @@ const Cart = () => {
 		>
 			<SafeAreaView style={styles.container} >
 
-
-				<View style={{ backgroundColor: "white", height: 90, width: 400, alignItems: "center", justifyContent: "center", position: "absolute", top: 0, borderColor: "white" }}>
+				<View style={{ backgroundColor: "white", height: screenHeight * 0.1, width: 400, alignItems: "center", justifyContent: "center", position: "absolute", top: 0, borderColor: "white" }}>
 					<Text style={{ color: "black", fontSize: 25, marginTop: 30, fontWeight: "bold" }}>Cart</Text>
 				</View>
 
@@ -367,22 +366,22 @@ const Cart = () => {
 												return (<Text style={{ fontSize: 15, marginStart: 14 }}>{e.name} • ${e.price}</Text>)
 											})}
 										</SafeAreaView>
-										<Text style={{ color: "black", fontSize: 15, marginLeft: "42%", marginTop: "3%" }}> Date: {item.selectedDay} at {Math.trunc(item.selectedTime)}:{((item.selectedTime % 1) * 60)} {Math.trunc(item.selectedTime) > 10 ? "PM" : "AM"}</Text>
+										<Text style={{ color: "black", fontSize: 15, marginLeft: screenWidth * 0.4, marginTop: "3%" }}> Date: {item.selectedDay} at {Math.trunc(item.selectedTime)}:{((item.selectedTime % 1) * 60)} {Math.trunc(item.selectedTime) > 10 ? "PM" : "AM"}</Text>
 
 									</View>
 								</SafeAreaView>
 							)}
 							renderHiddenItem={(item, rowMap) => (
 								<TouchableOpacity onPress={() => { fetchCartPrice(), deleteCartItem(item.item.id), rowMap[item.item.id].closeRow() }}>
-									<View style={{ backgroundColor: "red", height: "98.5%", width: 100, borderRadius: 0, justifyContent: "center", alignItems: "center", marginLeft: 295 }}>
+									<View style={{ backgroundColor: "red", height: "98.5%", width: screenWidth * 0.25, borderRadius: 0, justifyContent: "center", alignItems: "center", marginLeft: screenWidth * 0.75 }}>
 										{/* <View style={{ position: "absolute" }}> */}
 										<Text style={{ fontSize: 20, fontWeight: "500", color: "white" }}>Delete</Text>
 										{/* </View> */}
 									</View>
 								</TouchableOpacity>
 							)}
-							rightOpenValue={-100}
-							stopRightSwipe={-100}
+							rightOpenValue={-screenWidth * 0.25}
+							stopRightSwipe={-screenWidth * 0.25}
 							disableRightSwipe={true}
 
 						/>
@@ -391,7 +390,7 @@ const Cart = () => {
 
 				</SafeAreaView> : null}
 
-				{serviceList[0] != null && loading == false ? <View style={{ flex: 0, height: "100%", width: "100%", backgroundColor: "white", alignItems: "center", position: "absolute", top: "80%", borderTopWidth: 0.3 }}>
+				{serviceList[0] != null && loading == false ? <View style={{ flex: 0, height: "100%", width: "100%", backgroundColor: "white", alignItems: "center", position: "absolute", top: screenHeight * 0.72, borderTopWidth: 0.3 }}>
 					<View style={{ position: "absolute", top: "3%", left: "3%", borderBottomWidth: 2, width: "30%", height: "100%" }}>
 						{serviceList[0] != null ? <Text style={{ fontSize: 22, fontWeight: "bold" }}>Subtotal</Text> : null}
 					</View>
@@ -543,8 +542,8 @@ const styles = StyleSheet.create({
 	},
 
 	serviceHolder: {
-		width: 395,
-		height: 100,
+		width: Dimensions.get("screen").width,
+		height: Dimensions.get("screen").height * 0.15,
 		marginBottom: 3,
 		backgroundColor: "#ffffff",
 		alignContent: "flex-start",

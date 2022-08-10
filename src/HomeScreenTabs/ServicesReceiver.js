@@ -47,8 +47,8 @@ const Services2 = (trigger) => {
 	const ref = React.useRef();
 	const [modalVisible, setModalVisible] = useState(false);
 	const [animateModal, setanimateModal] = useState(true);
-	const windowWidth = Dimensions.get('screen').width;
-	const windowHeight = Dimensions.get('screen').height;
+	const screenWidth = Dimensions.get('screen').width;
+	const screenHeight = Dimensions.get('screen').height;
 	const [currentUserDocID, setCurrentUserDocID] = useState("");
 
 	useEffect(() => {
@@ -104,8 +104,8 @@ const Services2 = (trigger) => {
 			const user = auth.currentUser.uid;
 			await db
 				.collection('Users')
-				.where('userType', '==', 'service provider')
-				.where('range', '<', "250")
+				// .where('userType', '==', 'service provider')
+				// .where('range', '<', "250")
 				.get()
 				.then((querySnapshot) => {
 					querySnapshot.forEach((doc) => {
@@ -119,7 +119,7 @@ const Services2 = (trigger) => {
 							image,
 							category
 						} = doc.data();
-						if (geolib.isPointWithinRadius(
+						if (userType == "service provider" && geolib.isPointWithinRadius(
 							loc.coords,
 							address,
 							500000
@@ -169,7 +169,7 @@ const Services2 = (trigger) => {
 			const user = auth.currentUser.uid;
 			await db
 				.collection('Users')
-				.where('userType', '==', 'service provider')
+				// .where('userType', '==', 'service provider')
 				.orderBy('category')
 				.get()
 				.then((querySnapshot) => {
@@ -184,7 +184,7 @@ const Services2 = (trigger) => {
 							image,
 							category
 						} = doc.data();
-						if (geolib.isPointWithinRadius(
+						if (userType == "service provider" && geolib.isPointWithinRadius(
 							loc,
 							address,
 							5000000
@@ -366,11 +366,11 @@ const Services2 = (trigger) => {
 			{loading == true ? <LottieView source={require("../../assets/50738-loading-line.json")} autoPlay loop ref={ref} /> : null}
 
 			<View style={{ backgroundColor: "white", height: 150, width: 400, justifyContent: "center", position: "absolute", top: 0, borderColor: "white" }}>
-				<View style={{ position: "absolute", top: "30%", left: "5%" }}>
+				<View style={{ position: "absolute", top: screenHeight * 0.07, left: "5%" }}>
 					<Text style={{ color: "black", fontSize: 30, fontWeight: "bold" }}>Services</Text>
 				</View>
 
-				<View style={{ marginTop: 100, marginLeft: 10, flexDirection: "row" }}>
+				<View style={{ marginTop: screenHeight * 0.12, marginLeft: screenWidth * 0.04, flexDirection: "row" }}>
 					<Pressable onPress={() => setModalVisible(true)}>
 						<Text style={{ color: "black", fontSize: 17, fontWeight: "bold" }}>Your Location • {streetAddress.current}</Text>
 					</Pressable>
@@ -386,9 +386,9 @@ const Services2 = (trigger) => {
 
 
 
-				<SafeAreaView style={{ position: "absolute", right: 10, bottom: 60 }}>
+				<SafeAreaView style={{ position: "absolute", right: screenWidth * 0.05, top: screenHeight * 0.06 }}>
 					<SearchBar
-						style={{ width: 200, height: 40, backgroundColor: "#d1d4e0", borderRadius: 5 }}
+						style={{ width: screenWidth * 0.45, height: screenHeight * 0.06, backgroundColor: "#d1d4e0", borderRadius: 5 }}
 						maxLength={35}
 						fontColor="black"
 						iconColor="#cad0d9"
@@ -424,20 +424,17 @@ const Services2 = (trigger) => {
 						keyExtractor={(item) => item.id}
 						extraData={serviceList}
 						renderSectionHeader={({ section }) => <Text style={styles.sectionHeader}>{section.title}</Text>}
-						ListFooterComponent={<View style={{ height: 145 }} />}
+						ListFooterComponent={<View style={{ height: screenHeight * 0.03 }} />}
 						renderItem={({ item, separators }) => (
 							<Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium), navigation.navigate("ServicePage", { userID: item.userID, docID: item.id, companyName: item.companyName, currName: name }) }} >
 								<SafeAreaView >
-
 									<View style={styles.serviceHolder}>
-
 										<Image style={styles.tinyLogo}
 											source={{
 												uri: item.image,
 											}}
 										/>
-
-										<Text style={{ color: "black", marginTop: "40%", flexDirection: "row" }} >
+										<Text style={{ color: "black", marginTop: screenHeight * 0.18, flexDirection: "row" }} >
 											<Text style={{ color: "black", fontSize: 23, fontWeight: "bold", }}> {item.companyName} </Text>
 										</Text>
 										<Text style={{ color: "black", fontSize: 15 }}> {item.streetAddress} </Text>
@@ -467,27 +464,26 @@ const Services2 = (trigger) => {
 							<Text style={{ fontSize: 25, fontWeight: "bold", color: "black" }}>Location</Text>
 						</View>
 
-						<Text style={{ fontSize: 20, position: "absolute", top: windowHeight * 0.19, left: 0, fontWeight: "bold" }}>Recent Locations</Text>
+						<Text style={{ fontSize: 20, position: "absolute", top: screenHeight * 0.2, left: 0, fontWeight: "bold" }}>Recent Locations</Text>
 
-						<View style={{ alignSelf: "center", position: "absolute", bottom: windowHeight * 0.15 }}>
-							<CustomButton text="Save" onPress={() => { setModalVisible(false), addLocationToRecents(newLocation.current) }} />
+						<View style={{ alignSelf: "center", position: "absolute", bottom: screenHeight * 0.15 }}>
+							<CustomButton text="Save" onPress={() => { setModalVisible(false), addLocationToRecents(newLocation.current), console.log("hey") }} />
 						</View>
 						<XButton onPress={() => setModalVisible(false)}></XButton>
 
-						<View style={{ backgroundColor: "transparent", height: 500 }}>
+						<View style={{ backgroundColor: "transparent", height: screenHeight * 0.5 }}>
 
-							<View style={{ position: "absolute", top: windowHeight * 0.15 }}>
-
+							<View style={{ position: "absolute", top: screenHeight * 0.15 }}>
 								<SwipeListView
 									useFlatList
-									// style={{ position: "absolute", top: windowHeight * 0.15, zIndex: 1 }}
+									// style={{ position: "absolute", top: screenHeight * 0.15, zIndex: 1 }}
 									data={recentLocations}
 									keyExtractor={(item) => item.id}
 									extraData={recentLocations}
 									ListFooterComponent={<View style={{ height: 0 }} />}
 									renderItem={({ item }) => (
 										<SafeAreaView >
-											<View style={{ width: windowWidth * 1, height: windowHeight * 0.07, backgroundColor: "white", borderBottomWidth: 0.6, justifyContent: "center", marginBottom: 3 }}>
+											<View style={{ width: screenWidth * 1, height: screenHeight * 0.07, backgroundColor: "white", borderBottomWidth: 0.6, justifyContent: "center", marginBottom: 3 }}>
 												<Text style={{ fontSize: 20 }}> {item.streetAddress} </Text>
 
 											</View>
@@ -495,7 +491,7 @@ const Services2 = (trigger) => {
 									)}
 									renderHiddenItem={(item, rowMap) => (
 										<TouchableOpacity onPress={() => { deleteRecentLocation(item.index), rowMap[item.item.id].closeRow() }}>
-											<View style={{ backgroundColor: "red", height: windowHeight * 0.07, width: 90, borderRadius: 0, position: "absolute", right: 0, justifyContent:"center", alignItems: "center" }}>
+											<View style={{ backgroundColor: "red", height: screenHeight * 0.07, width: 90, borderRadius: 0, position: "absolute", right: 0, justifyContent: "center", alignItems: "center" }}>
 												{/* <View style={{ position: "absolute" }}> */}
 												<Text style={{ fontSize: 20, fontWeight: "500", color: "white" }}>Delete</Text>
 												{/* </View> */}
@@ -521,7 +517,7 @@ const Services2 = (trigger) => {
 
 									textInput: {
 										width: "90%",
-										height: 60,
+										height: screenHeight * 0.07,
 										fontSize: 20,
 										borderRadius: 15,
 										marginTop: 7,
@@ -530,8 +526,8 @@ const Services2 = (trigger) => {
 									},
 
 									listView: {
-										width: windowWidth * 0.97,
-										height: windowHeight * 0.2,
+										width: screenWidth * 0.97,
+										height: screenHeight * 0.2,
 										borderWidth: 0.5,
 										alignContent: "center",
 										borderRadius: 15,
@@ -598,7 +594,7 @@ const styles = StyleSheet.create({
 	container3: {
 		alignContent: "center",
 		alignItems: "center",
-		marginTop: "10%"
+		marginTop: Dimensions.get("screen").height * 0.05,
 	},
 
 	containerInputs: {
@@ -634,7 +630,6 @@ const styles = StyleSheet.create({
 		},
 		shadowOpacity: 0.30,
 		shadowRadius: 2,
-
 		elevation: 8,
 		borderRadius: 20,
 	},
@@ -669,7 +664,7 @@ const styles = StyleSheet.create({
 		fontWeight: 'bold',
 		color: "black",
 		// backgroundColor: '#ebedf0',
-		marginBottom: 10,
+		marginBottom: Dimensions.get("screen").height * 0.01,
 	},
 
 	// containerContent: { flex: 1, marginTop: 250 },
