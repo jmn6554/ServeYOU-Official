@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useLayoutEffect } from 'react';
-import { View, Text, SafeAreaView, StyleSheet, Alert, FlatList, Modal, Image, TouchableOpacity, Pressable, RefreshControl } from "react-native";
+import { View, Text, SafeAreaView, StyleSheet, Alert, FlatList, Modal, Image, TouchableOpacity, Pressable, RefreshControl, Dimensions } from "react-native";
 import DownPicker from "../Components/CustomButtons/DownPicker";
 import OptionsButton from "../Components/CustomButtons/OptionButton"
 import firebase from "firebase/compat/app";
@@ -20,116 +20,119 @@ import SwipeUpDownModal from 'react-native-swipe-modal-up-down';
 import CustomButton from '../Components/CustomButtons/CustomButton';
 
 const Services2 = (trigger) => {
-  const [address, setAddress] = useState("");
-  const [serviceList, setServiceList] = useState("");
-  var [currentAddress, setCurrentAddress] = useState(null);
-  const [Fetch, setFetch] = useState(true);
-  const navigation = useNavigation();
-  const [refreshing, setRefreshing] = useState(false);
-  var timesrun = 0;
-  const [intervals, setIntervals] = useState(true);
-  const [name, setName] = useState("");
-  const [filterList, setFilterList] = useState("")
-  // useEffect(() => {
-  //   const myInterval = setInterval(() => {
-  //     setFetch(!Fetch)
-  //     timesrun += 1;
+	const [address, setAddress] = useState("");
+	const [serviceList, setServiceList] = useState("");
+	var [currentAddress, setCurrentAddress] = useState(null);
+	const [Fetch, setFetch] = useState(true);
+	const navigation = useNavigation();
+	const [refreshing, setRefreshing] = useState(false);
+	var timesrun = 0;
+	const [intervals, setIntervals] = useState(true);
+	const [name, setName] = useState("");
+	const [filterList, setFilterList] = useState("")
+	const screenHeight = Dimensions.get("screen").height;
+	const screenWidth = Dimensions.get("screen").width;
 
-  //     if (timesrun < 1) {
-  //       console.log("hey")
-  //       // setCurrentAddress(Location.getCurrentPositionAsync({}));
-  //       // console.log(currentAddress)
-  //     }
-  //     else if (timesrun > 1) {
-  //       // fetchServices();
-  //       clearInterval(myInterval);
-  //       // console.log(currentAddress)
-  //     }
+	// useEffect(() => {
+	//   const myInterval = setInterval(() => {
+	//     setFetch(!Fetch)
+	//     timesrun += 1;
 
-
-  //   }, 500)
-  // }, [intervals]);
-
-  console.log(auth.currentUser.email)
-
-  useEffect(() => {
-    const fetchServices = async () => {
-      console.log("function called")
-      try {
-        const list = [];
-        const db = firebase.firestore();
-        const user = auth.currentUser.uid;
-        await db
-          .collection('Users')
-          .orderBy("companyName")
-          .get()
-          .then((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-              const {
-                address,
-                streetAddress,
-                companyName,
-                userID,
-                userType,
-                Image,
-              } = doc.data();
-              if (doc.data().userID == user) {
-                console.log("hey")
-                list.push({
-                  id: doc.id,
-                  userID: userID,
-                  companyName: companyName,
-                  address: address,
-                  streetAddress: streetAddress,
-                  image: Image,
-                });
-              }
-            });
-          });
-        setServiceList(list);
-      } catch (e) {
-        console.log(e);
-      }
-    };
-    fetchServices();
-  }, [])
-
-  console.log("hey")
+	//     if (timesrun < 1) {
+	//       console.log("hey")
+	//       // setCurrentAddress(Location.getCurrentPositionAsync({}));
+	//       // console.log(currentAddress)
+	//     }
+	//     else if (timesrun > 1) {
+	//       // fetchServices();
+	//       clearInterval(myInterval);
+	//       // console.log(currentAddress)
+	//     }
 
 
+	//   }, 500)
+	// }, [intervals]);
 
-  const onRefresh = React.useCallback(() => {
-    setRefreshing(true);
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy)
-    console.log("refreshed")
-    console.log(currentAddress)
-    if (currentAddress != null) {
-      fetchServices();
-    }
-    else {
-      setIntervals(false)
-    }
+	console.log(auth.currentUser.email)
 
-    setTimeout(() => {
-      setRefreshing(false);
-    }, 1000);
-  }, []);
+	useEffect(() => {
+		const fetchServices = async () => {
+			console.log("function called")
+			try {
+				const list = [];
+				const db = firebase.firestore();
+				const user = auth.currentUser.uid;
+				await db
+					.collection('Users')
+					.orderBy("companyName")
+					.get()
+					.then((querySnapshot) => {
+						querySnapshot.forEach((doc) => {
+							const {
+								address,
+								streetAddress,
+								companyName,
+								userID,
+								userType,
+								Image,
+							} = doc.data();
+							if (doc.data().userID == user) {
+								console.log("hey")
+								list.push({
+									id: doc.id,
+									userID: userID,
+									companyName: companyName,
+									address: address,
+									streetAddress: streetAddress,
+									image: Image,
+								});
+							}
+						});
+					});
+				setServiceList(list);
+			} catch (e) {
+				console.log(e);
+			}
+		};
+		fetchServices();
+	}, [])
+
+	console.log("hey")
 
 
-  return (
-    <SafeAreaView style={styles.container} >
 
-      <View style={{ backgroundColor: "white", height: 90, width: 400, alignItems: "center", justifyContent: "center", position: "absolute", top: 0, borderColor: "white" }}>
-        <Text style={{ color: "black", fontSize: 25, marginTop: 30, fontWeight: "bold" }}>Settings</Text>
-        <SafeAreaView style={{ position: "absolute", right: 10, bottom: 5 }}>
-        </SafeAreaView>
-      </View>
+	const onRefresh = React.useCallback(() => {
+		setRefreshing(true);
+		Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy)
+		console.log("refreshed")
+		console.log(currentAddress)
+		if (currentAddress != null) {
+			fetchServices();
+		}
+		else {
+			setIntervals(false)
+		}
+
+		setTimeout(() => {
+			setRefreshing(false);
+		}, 1000);
+	}, []);
 
 
-      <SafeAreaView style={styles.container2}>
-        <CustomButton text="Sign Out" onPress={() => { navigation.navigate("SignIn"), auth.signOut() }} />
-        <ScrollView>
-          {/* <FlatList
+	return (
+		<SafeAreaView style={styles.container} >
+
+			<View style={{ backgroundColor: "white", height: screenHeight * 0.1, width: screenWidth, alignItems: "center", justifyContent: "center", position: "absolute", top: 0, borderColor: "white" }}>
+				<Text style={{ color: "black", fontSize: 25, marginTop: screenHeight * 0.05, fontWeight: "bold" }}>Settings</Text>
+				<SafeAreaView style={{ position: "absolute", right: 10, bottom: 5 }}>
+				</SafeAreaView>
+			</View>
+
+
+			<SafeAreaView style={styles.container2}>
+				<CustomButton text="Sign Out" onPress={() => { navigation.navigate("SignIn"), auth.signOut() }} />
+				<ScrollView>
+					{/* <FlatList
             data={serviceList}
             keyExtractor={(item) => item.id}
             extraData={serviceList}
@@ -158,87 +161,85 @@ const Services2 = (trigger) => {
             )}
           /> */}
 
-        </ScrollView>
+				</ScrollView>
 
-      </SafeAreaView>
-    </SafeAreaView>
-  );
+			</SafeAreaView>
+		</SafeAreaView>
+	);
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 15,
-    width: "100%",
-    height: "100%"
-  },
+	container: {
+		flex: 1,
+		alignItems: "center",
+		justifyContent: "center",
+		padding: 15,
+		width: "100%",
+		height: "100%"
+	},
 
-  container2: {
+	container2: {
+		alignItems: "center",
+		justifyContent: "center",
+		alignContent: "center",
+		padding: 15,
+		width: "100%",
+		height: "100%",
+		marginTop: 20,
+		position: "relative",
+		top: Dimensions.get("screen").height * 0.05
+	},
 
-    alignItems: "center",
-    justifyContent: "center",
-    alignContent: "center",
-    padding: 15,
-    width: "100%",
-    height: "100%",
-    marginTop: 20,
-    position: "relative",
-    top: "4.35%"
+	container3: {
 
-  },
+		top: "5%",
+		justifyContent: "center",
+		alignContent: "center",
+		alignItems: "center"
+	},
 
-  container3: {
+	serviceHolder: {
+		width: 390,
+		height: 70,
+		marginBottom: 3,
+		backgroundColor: "#ffffff",
+		alignContent: "flex-start",
+		borderRadius: 2,
+		shadowColor: "#000",
+		shadowOffset: {
+			width: 0,
+			height: 4,
+		},
+		shadowOpacity: 0.30,
+		shadowRadius: 4.65,
 
-    top: "5%",
-    justifyContent: "center",
-    alignContent: "center",
-    alignItems: "center"
-  },
+		elevation: 8,
+	},
 
-  serviceHolder: {
-    width: 390,
-    height: 70,
-    marginBottom: 3,
-    backgroundColor: "#ffffff",
-    alignContent: "flex-start",
-    borderRadius: 2,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.30,
-    shadowRadius: 4.65,
+	tinyLogo: {
+		width: 390,
+		height: 155,
+		position: "absolute",
+		borderRadius: 2,
+	},
 
-    elevation: 8,
-  },
+	edit: {
+		position: "absolute",
+		bottom: 50,
+		right: 5,
 
-  tinyLogo: {
-    width: 390,
-    height: 155,
-    position: "absolute",
-    borderRadius: 2,
-  },
+	},
 
-  edit: {
-    position: "absolute",
-    bottom: 50,
-    right: 5,
+	delete: {
+		position: "absolute",
+		bottom: 0,
+		right: 5,
 
-  },
+	},
 
-  delete: {
-    position: "absolute",
-    bottom: 0,
-    right: 5,
-
-  },
-
-  text: {
-    marginTop: 650,
-  },
+	text: {
+		marginTop: 650,
+	},
 
 
 });

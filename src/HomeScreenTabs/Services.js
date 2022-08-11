@@ -34,24 +34,23 @@ const Services2 = () => {
 	const [modalVisible1, setModalVisible1] = useState(false);
 	const [modalVisible2, setModalVisible2] = useState(false);
 	const [modalVisible3, setModalVisible3] = useState(false);
+	const [modalVisible4, setModalVisible4] = useState(false);
 	const [animateModal, setanimateModal] = useState(false);
 	const navigation = useNavigation();
 	const [pricePickerValue, setPricePickerValue] = useState("");
-	const [showCaseImages, setShowCaseImages] = useState([]);
-	const [showCaseImagePicked, setShowCaseImagePicked] = useState("");
+	const [showCaseImages, setShowCaseImages] = useState([""]);
+	const [showCaseImageIndex, setShowCaseImageIndex] = useState("");
 
 	useEffect(() => {
 		fetchServices();
 	}, [Fetch])
 
-	console.log(showCaseImages);
+	// console.log(showCaseImages);
 
 	const addShowCasePicture = async (imagePicked) => {
 		var showCaseImagesTemp = [...showCaseImages];
 		const db = firebase.firestore();
 		const user = auth.currentUser.uid;
-
-		// console.log(showCaseImagesTemp);
 
 		const blob = await new Promise((resolve, reject) => {
 			const xhr = new XMLHttpRequest();
@@ -71,17 +70,34 @@ const Services2 = () => {
 		const result = await uploadBytesResumable(ref1, blob);
 		const imageURL = await getDownloadURL(ref1);
 
-		console.log(imageURL)
-		console.log(showCaseImages)
-
 		showCaseImagesTemp.push(imageURL)
+
 		setShowCaseImages(showCaseImages => [...showCaseImages, imageURL]);
 
-		db.collection("Users").doc(docID).update({ showCaseImages: showCaseImagesTemp });
+		updateUserShowCase(showCaseImagesTemp);
+
+		setModalVisible4(false);
 
 		blob.close();
 	}
 
+	const deleteShowCaseImage = () => {
+		var showCaseImagesTemp = [...showCaseImages];
+
+		showCaseImagesTemp.splice(showCaseImageIndex, 1);
+
+		setShowCaseImages(showCaseImagesTemp);
+
+		updateUserShowCase(showCaseImagesTemp);
+
+		setModalVisible4(false);
+	}
+
+	const updateUserShowCase = (newShowCase) => {
+		const db = firebase.firestore();
+		const user = auth.currentUser.uid;
+		db.collection("Users").doc(docID).update({ showCaseImages: newShowCase });
+	}
 
 
 	const addService = async (productID, priceID, serviceType) => {
@@ -234,7 +250,7 @@ const Services2 = () => {
 							setDocID(doc.id)
 
 							if (showCaseImages != undefined) {
-								setShowCaseImages([showCaseImages])
+								setShowCaseImages(showCaseImages)
 							}
 							else {
 								setShowCaseImages([])
@@ -369,8 +385,8 @@ const Services2 = () => {
 
 	return (
 		<SafeAreaView style={styles.container} >
-			<View style={{ backgroundColor: "white", height: 90, width: 400, alignItems: "center", justifyContent: "center", position: "absolute", top: 0, borderColor: "white" }}>
-				<Text style={{ color: "black", fontSize: 25, marginTop: 30, fontWeight: "bold" }}>My Services</Text>
+			<View style={{ backgroundColor: "#769ECB", height: screenHeight * 0.12, width: screenWidth, alignItems: "center", justifyContent: "center", position: "absolute", top: 0, borderColor: "white" }}>
+				<Text style={{ color: "black", fontSize: 25, marginTop: screenHeight * 0.02, fontWeight: "bold" }}>My Services</Text>
 			</View>
 
 			<SafeAreaView style={styles.container2}>
@@ -382,17 +398,18 @@ const Services2 = () => {
 
 					ListHeaderComponent=
 					{showCaseImages != "" ?
-						<View style={{ marginBottom: 20, zIndex: 2 }}>
+						<View style={{ marginBottom: 20, zIndex: 2 }} onLongPress={() => console.log("hey")}>
 							<SliderBox
 								ImageComponentStyle={{ borderRadius: 15, width: '97%' }}
-								onCurrentImagePressed={() => console.log("hey")}
-								sliderBoxHeight={200} images={showCaseImages} />
+								onCurrentImagePressed={index => { setModalVisible4(true), setShowCaseImageIndex(index) }}
+								autoPlay
+								sliderBoxHeight={screenHeight * 0.25} images={showCaseImages} />
 						</View> :
-						<TouchableOpacity style={{ height: screenHeight * 0.15, width: screenWidth * 0.99, marginBottom: 20, justifyContent: "center", alignItems: "center", backgroundColor: "transparent", borderRadius: 25, borderBottomWidth: 1, borderTopWidth: 1, marginStart: 2 }} onPress={() => pickShowcaseImage()}>
+						<TouchableOpacity style={{ height: screenHeight * 0.15, width: screenWidth * 0.99, marginBottom: 20, justifyContent: "center", alignItems: "center", backgroundColor: "#769ECB", borderRadius: 25, marginStart: 2 }} onPress={() => pickShowcaseImage()}>
 							<Text style={{ fontWeight: "500", fontSize: 20 }}>Add Showcase</Text>
 						</TouchableOpacity>}
 
-					ListFooterComponent={<View style={{ height: screenHeight * 0.02 }} />}
+					ListFooterComponent={<View style={{ height: screenHeight * 0.05 }} />}
 					renderItem={({ item, separators }) => (
 						<SafeAreaView >
 							<TouchableOpacity onPress={() => navigation.navigate("ServicesAdditional", { serviceName: item.name })}>
@@ -400,8 +417,8 @@ const Services2 = () => {
 									<View style={{ flex: 1 }}>
 
 										<Image style={{
-											width: 390,
-											height: 155,
+											width: screenWidth,
+											height: screenHeight * 0.19,
 											position: "absolute",
 											borderRadius: 20,
 										}}
@@ -409,12 +426,13 @@ const Services2 = () => {
 												uri: item.image,
 											}} />
 									</View>
-									<View style={{ position: "absolute", top: screenHeight * 0.20 }}>
+									<View style={{ position: "absolute", top: screenHeight * 0.2 }}>
 
 										<Text style={{ color: "black", fontWeight: "bold" }} >
 											<Text style={{ color: "black", fontSize: 25, fontWeight: "bold" }}> {item.name} </Text>
 											<Text style={{ fontSize: 20 }}>{item.price} ({item.priceUnit})</Text>
 										</Text>
+
 										<Text style={{ color: "gray", fontWeight: "bold", fontSize: 18 }}> {item.description}</Text>
 
 									</View>
@@ -498,6 +516,71 @@ const Services2 = () => {
 										}
 										onClose={() => {
 											setModalVisible2(false);
+											setanimateModal(false);
+										}}
+									/>
+
+								</SafeAreaView>
+
+								<SafeAreaView >
+									<SwipeUpDownModal
+										modalVisible={modalVisible3}
+										PressToanimate={animateModal}
+										//if you don't pass HeaderContent you should pass marginTop in view of ContentModel to Make modal swipeable
+										ContentModal={
+											<Pressable onPress={() => Keyboard.dismiss()}>
+												<View style={styles.modalView2}>
+													<View style={styles.container3}>
+
+														<Text style={{ fontSize: 30, fontWeight: "bold", color: "black", marginBottom: 15, }}>Edit Service</Text>
+														<CustomInput
+															placeholder="Service"
+															value={name}
+															setValue={setName}
+															autoCorrect={true}
+															autoCapitalize={"words"}
+														/>
+														<CustomInput
+															placeholder="Description"
+															value={description}
+															setValue={setDescription}
+															autoCorrect={true}
+															autoCapitalize={"sentences"}
+														/>
+														<NumberInput
+															placeholder="Price"
+															value={price}
+															setValue={setPrice}
+															autoCorrect={true}
+															autoCapitalize={"none"}
+														/>
+
+														<ModalButtons
+															text="Save Service"
+															onPress={() => editService(item.id)}
+														/>
+														<ModalButtons
+															text="Add Banner"
+															onPress={pickServiceImage}
+														/>
+
+														<ModalButtons
+															text="Cancel"
+															onPress={() => setModalVisible3(false)}
+														/>
+													</View>
+												</View>
+											</Pressable>
+										}
+										HeaderStyle={styles.headerContent}
+										ContentModalStyle={styles.Modal}
+										HeaderContent={
+											<View style={styles.containerHeader}>
+
+											</View>
+										}
+										onClose={() => {
+											setModalVisible3(false);
 											setanimateModal(false);
 										}}
 									/>
@@ -604,77 +687,35 @@ const Services2 = () => {
 			<SafeAreaView >
 
 				<SwipeUpDownModal
-					modalVisible={modalVisible3}
+					modalVisible={modalVisible4}
 					PressToanimate={animateModal}
 					//if you don't pass HeaderContent you should pass marginTop in view of ContentModel to Make modal swipeable
 					ContentModal={
 						<Pressable onPress={() => Keyboard.dismiss()}>
-							<View style={styles.modalView}>
+							<View style={styles.modalView4}>
 								<View style={styles.container3}>
-									<Text style={{ fontSize: 30, fontWeight: "bold", color: "black", marginBottom: 40, }}>Add Quotable Service</Text>
+									<Text style={{ fontSize: 30, fontWeight: "bold", color: "black", marginBottom: 40 }}>Edit Show Case</Text>
 
-									<KeyboardAvoidingView behavior="height" style={{ flex: 1 }} >
-										<CustomInput
-											placeholder="Service Offered"
-											value={name}
-											setValue={setName}
-											autoCorrect={true}
-											autoCapitalize={"words"}
-										/>
-										<CustomInput
-											placeholder="Describe your service"
-											value={description}
-											setValue={setDescription}
-											autoCorrect={true}
-											autoCapitalize={"sentences"}
-										/>
+									<ModalButtons
+										text="Add Picture"
+										onPress={pickShowcaseImage}
+									/>
 
-										<View style={{ flexDirection: "row" }}>
-											<NumberInput
-												placeholder="Price"
-												value={price}
-												setValue={setPrice}
-												autoCorrect={true}
-												autoCapitalize={"none"}
-											/>
+									<ModalButtons
+										text="Delete Current Image"
+										onPress={() => deleteShowCaseImage()}
+									/>
 
-											{/* <View style={{ backgroundColor: "transparent", height: screenHeight * 0.06, width: screenWidth * 0.45, justifyContent: "center", borderColor: "black", borderRadius: 10, borderWidth: 0.35, marginTop: 5, marginLeft: 2 }}> */}
-											<RNPickerSelect
-												style={pickerStyle}
-												placeholder={{ label: "Slect a price unit...", value: "default" }}
-												onValueChange={(value) => setPricePickerValue(value)}
-												items={[
-													{ label: '$/hr', value: '$/hr' },
-													{ label: '$/sqft', value: '$/sqft' },
-													{ label: '$/month', value: '$/month' },
-												]}
-											/>
-											{/* </View> */}
-										</View>
-
-
-										<ModalButtons
-											text="Add Picture"
-											onPress={pickServiceImage}
-										/>
-
-
-										<ModalButtons
-											text="Add Service"
-											onPress={() => { addSaveService("quotable") }}
-										/>
-
-										<ModalButtons
-											text="Cancel"
-											onPress={() => setModalVisible3(false)}
-										/>
-									</KeyboardAvoidingView>
+									<ModalButtons
+										text="Cancel"
+										onPress={() => setModalVisible4(false)}
+									/>
 
 								</View>
 							</View>
 						</Pressable>
 					}
-					HeaderStyle={styles.headerContent}
+					HeaderStyle={styles.headerContent4}
 					ContentModalStyle={styles.Modal}
 					HeaderContent={
 						<View style={styles.containerHeader}>
@@ -682,7 +723,7 @@ const Services2 = () => {
 						</View>
 					}
 					onClose={() => {
-						setModalVisible3(false);
+						setModalVisible4(false);
 						setanimateModal(false);
 					}}
 				/>
@@ -737,9 +778,7 @@ const Services2 = () => {
 
 			</SafeAreaView>
 
-
-
-			<View style={{ position: "absolute", top: 45, left: 335 }}>
+			<View style={{ position: "absolute", top: screenHeight * 0.05, left: screenWidth * 0.85 }}>
 				<PlusButton
 					text="Add Service"
 					onPress={() => setModalVisible1(true)}
@@ -803,15 +842,14 @@ const styles = StyleSheet.create({
 		alignContent: "center",
 		padding: 15,
 		width: "100%",
-		height: "85%",
-		// marginTop: 45,
-		position: "relative",
+		height: Dimensions.get("screen").height * 0.85,
+		marginTop: Dimensions.get("screen").height * 0.08,
+		// position: "relative",
 		// top: "3%"
 
 	},
 
 	container3: {
-
 		top: "5%",
 		justifyContent: "center",
 		alignContent: "center",
@@ -823,7 +861,7 @@ const styles = StyleSheet.create({
 		height: "100%",
 		width: "100%",
 		alignContent: "center",
-		marginTop: "25%",
+		marginTop: Dimensions.get("screen").height * 0.15,
 		margin: 0,
 		borderRadius: 0,
 		backgroundColor: "white",
@@ -843,6 +881,25 @@ const styles = StyleSheet.create({
 		width: "100%",
 		alignContent: "center",
 		marginTop: "25%",
+		margin: 0,
+		borderRadius: 0,
+		backgroundColor: "white",
+		alignItems: "center",
+		shadowColor: "#000",
+		shadowOffset: {
+			width: 0,
+			height: 2
+		},
+		shadowOpacity: 0.25,
+		shadowRadius: 4,
+		elevation: 5
+	},
+
+	modalView4: {
+		height: "100%",
+		width: "100%",
+		alignContent: "center",
+		marginTop: Dimensions.get("screen").height * 0.45,
 		margin: 0,
 		borderRadius: 0,
 		backgroundColor: "white",
@@ -884,20 +941,14 @@ const styles = StyleSheet.create({
 
 	edit: {
 		position: "absolute",
-		bottom: 40,
+		top: Dimensions.get("screen").height * 0.18,
 		right: 5,
-
 	},
 
 	delete: {
 		position: "absolute",
-		bottom: 0,
+		top: Dimensions.get("screen").height * 0.23,
 		right: 5,
-
-	},
-
-	text: {
-		marginTop: 650,
 	},
 
 	picker: {
@@ -922,11 +973,21 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		justifyContent: 'center',
 	},
+
+	headerContent4: {
+		marginTop: Dimensions.get("screen").height * 0.32,
+		alignContent: 'center',
+		alignItems: 'center',
+		justifyContent: 'center',
+	},
+
 	Modal: {
 		backgroundColor: 'transparent',
 		marginTop: 115,
 	},
+
 	containerContent2: { flex: 1, marginTop: 70 },
+
 	containerHeader2: {
 		flex: 1,
 		alignContent: 'center',

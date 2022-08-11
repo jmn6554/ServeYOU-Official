@@ -46,6 +46,8 @@ const OrdersQuotesProvider = () => {
 	const [quantityInput, setQuantityInput] = useState("");
 	const [priceIDArray, setPriceIDArray] = useState([{ name: "", docID: "" }]);
 	var tempCount = 0;
+	const screenHeight = Dimensions.get("screen").height;
+	const screenWidth = Dimensions.get("screen").width;
 
 	useEffect(async () => {
 		await fetchOrders();
@@ -210,8 +212,8 @@ const OrdersQuotesProvider = () => {
 
 	return (
 		<SafeAreaView style={styles.container} >
-			<View style={{ backgroundColor: "white", height: 90, width: 400, alignItems: "center", justifyContent: "center", position: "absolute", top: 0, borderColor: "white" }}>
-				<Text style={{ color: "black", fontSize: 25, marginTop: 30, fontWeight: "bold" }}>Orders</Text>
+			<View style={{ backgroundColor: "white", height: screenHeight * 0.1, width: screenWidth, alignItems: "center", justifyContent: "center", position: "absolute", top: 0, borderColor: "white" }}>
+				<Text style={{ color: "black", fontSize: 25, marginTop: screenHeight * 0.03, fontWeight: "bold" }}>Orders</Text>
 			</View>
 
 			<SafeAreaView style={styles.container2}>
@@ -406,7 +408,7 @@ const styles = StyleSheet.create({
 
 	serviceHolder: {
 		width: Dimensions.get("screen").width,
-		height: Dimensions.get("screen").height * 0.12,
+		height: Dimensions.get("screen").height * 0.17,
 		marginBottom: 3,
 		backgroundColor: "#ffffff",
 		alignContent: "flex-start",

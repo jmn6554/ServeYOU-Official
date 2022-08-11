@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { View, Text, SafeAreaView, StyleSheet, Alert, FlatList, Modal, Image, KeyboardAvoidingView, TouchableOpacity, SectionList, Pressable, Keyboard } from "react-native";
+import { View, Text, SafeAreaView, StyleSheet, Alert, FlatList, Modal, Image, KeyboardAvoidingView, TouchableOpacity, SectionList, Pressable, Keyboard, Dimensions } from "react-native";
 import { SpeedDial, Overlay } from 'react-native-elements';
 import GestureRecognizer from 'react-native-swipe-gestures';
 import CustomInput from "../Components/CustomInput";
@@ -540,16 +540,15 @@ const styles = StyleSheet.create({
 
 	edit: {
 		position: "absolute",
-		bottom: 20,
-		right: 5,
+		bottom: Dimensions.get("screen").height * 0.03,
+		right: Dimensions.get("screen").width * 0.03,
 
 	},
 
 	delete: {
 		position: "absolute",
-		top: 30,
-		right: 5,
-
+		top: Dimensions.get("screen").height * 0.04,
+		right: Dimensions.get("screen").width * 0.03,
 	},
 
 	text: {

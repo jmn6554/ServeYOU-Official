@@ -5,6 +5,7 @@ import {
 	View,
 	SafeAreaView,
 	TabBarIOSItem,
+	Dimensions
 } from "react-native";
 import CustomButton from "../Components/CustomButtons/CustomButton";
 import Search from "../HomeScreenTabs/Search";
@@ -35,6 +36,8 @@ const HomeScreen = () => {
 	const navigation = useNavigation();
 	const [search, setSearch] = useState("");
 	const [location, setLocation] = useState("");
+	const screenHeight = Dimensions.get("screen").height;
+	const screenWidth = Dimensions.get("screen").width;
 
 	const updateSearch = (search) => {
 		setSearch(search);
@@ -61,13 +64,13 @@ const HomeScreen = () => {
 			activeColor="black"
 			shifting="true"
 			barStyle={{
-				backgroundColor: 'rgba(255, 255, 255, 0.9)',
+				backgroundColor: 'rgba(255, 255, 255, 0.8)',
 				position: "absolute",
-				bottom: 0,
+				bottom: screenHeight * 0,
 				right: 0,
 				left: 0,
 				alignContent: "center",
-				height: 75,
+				height: screenHeight * 0.08,
 			}}
 		>
 
