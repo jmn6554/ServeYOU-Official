@@ -385,7 +385,7 @@ const Services2 = () => {
 
 	return (
 		<SafeAreaView style={styles.container} >
-			<View style={{ backgroundColor: "#769ECB", height: screenHeight * 0.12, width: screenWidth, alignItems: "center", justifyContent: "center", position: "absolute", top: 0, borderColor: "white" }}>
+			<View style={{ backgroundColor: "white", height: screenHeight * 0.12, width: screenWidth, alignItems: "center", justifyContent: "center", position: "absolute", top: 0, borderColor: "white" }}>
 				<Text style={{ color: "black", fontSize: 25, marginTop: screenHeight * 0.02, fontWeight: "bold" }}>My Services</Text>
 			</View>
 
@@ -405,7 +405,7 @@ const Services2 = () => {
 								autoPlay
 								sliderBoxHeight={screenHeight * 0.25} images={showCaseImages} />
 						</View> :
-						<TouchableOpacity style={{ height: screenHeight * 0.15, width: screenWidth * 0.99, marginBottom: 20, justifyContent: "center", alignItems: "center", backgroundColor: "#769ECB", borderRadius: 25, marginStart: 2 }} onPress={() => pickShowcaseImage()}>
+						<TouchableOpacity style={{ height: screenHeight * 0.15, width: screenWidth * 0.99, marginBottom: 20, justifyContent: "center", alignItems: "center", backgroundColor: "gray", borderRadius: 25, marginStart: 2 }} onPress={() => pickShowcaseImage()}>
 							<Text style={{ fontWeight: "500", fontSize: 20 }}>Add Showcase</Text>
 						</TouchableOpacity>}
 
@@ -425,7 +425,9 @@ const Services2 = () => {
 											source={{
 												uri: item.image,
 											}} />
+
 									</View>
+
 									<View style={{ position: "absolute", top: screenHeight * 0.2 }}>
 
 										<Text style={{ color: "black", fontWeight: "bold" }} >
